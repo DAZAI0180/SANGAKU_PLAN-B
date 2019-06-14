@@ -1,0 +1,24 @@
+{
+  "name": "SANGAKU",
+  "version": "1.0.0",
+  "description": "My stylish Nuxt.js project",
+  "author": "kitadesega",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/vuetify": "0.5.5",
+    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/pwa": "^2.6.0",
+    "nuxt": "^2.0.0"
+  },
+  "devDependencies": {
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "nodemon": "^1.18.9"
+  }
+}
