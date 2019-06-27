@@ -56,7 +56,7 @@ mounted() {
       firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
-        this.$store.dispatch('user/fecthUser',user.displayName)
+        this.$store.dispatch('user/fecthUser', "id" )
         //this.$store.commit('login', user)
         //console.log(this.user)
       } else {
