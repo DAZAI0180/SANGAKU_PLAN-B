@@ -1,125 +1,67 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="drawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-tile
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"
-          router
-          exact
-        >
-          <v-list-tile-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title" />
-          </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-toolbar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-toolbar-side-icon @click="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title" />
+
+    <v-toolbar :fixed="fixed" app >
       <v-spacer />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>menu</v-icon>
-      </v-btn>
+        <v-text-field
+        hide-details
+        prepend-icon="search"
+        single-line
+        placeholder="何をお探しですか？"
+         />
+        <!--<v-toolbar-title v-text="title" />-->
+        <v-spacer />
     </v-toolbar>
+    
     <v-content>
       <v-container>
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-tile @click.native="right = !right">
-          <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer
-      :fixed="fixed"
-      app
-    >
-         <v-bottom-nav
-      :active.sync="bottomNav"
-      :color="color"
-      :value="true"
-      absolute
-      dark
-      shift
-    >
-      <v-btn dark>
-        <span>Video</span>
-        <v-icon>android</v-icon>
+
+
+ <v-bottom-nav :value="true" :active.sync="bottomNav"
+ :fixed=true >
+  <v-btn color="teal" flat value="recent" to = "/home" >
+    <span>ホーム</span>
+    <v-icon>home</v-icon>
+  </v-btn>
+
+      <v-btn
+        color="teal"
+        flat
+        value="favorites"
+      >
+        <span>出品</span>
+        <v-icon>photo_camera</v-icon>
       </v-btn>
 
-      <v-btn dark>
-        <span>Music</span>
-        <v-icon>music_note</v-icon>
-      </v-btn>
-
-      <v-btn dark>
-        <span>Book</span>
-        <v-icon>book</v-icon>
-      </v-btn>
-
-      <v-btn dark>
-        <span>Image</span>
-        <v-icon>image</v-icon>
+      <v-btn
+        color="teal"
+        flat
+        value="unko"
+        to = "/mypage"
+      >
+        <span>マイページ</span>
+        <v-icon>accessibility</v-icon>
       </v-btn>
     </v-bottom-nav>
-    </v-footer>
+
   </v-app>
+  
 </template>
 
 <script>
+import firebase from '~/plugins/firebase'
+import { mapActions, mapState, mapGetters } from 'vuex'
 export default {
-  data() {
+ data() {
     return {
       clipped: false,
       drawer: false,
       fixed: false,
+      absolute:false,
+      value:true,
       items: [
         {
           icon: 'apps',
@@ -128,13 +70,13 @@ export default {
         },
         {
           icon: 'bubble_chart',
-          title: 'せがんご1',
-          to: '/inspire'
+          title: 'ホーム',
+          to: '/home'
         },
         {
           icon: 'bubble_chart',
-          title: 'せがんご2',
-          to: '/unko'
+          title: '出品した商品',
+          to: '/'
         },
         {
           icon: 'bubble_chart',
@@ -145,8 +87,22 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'Vuetify.js'
+      title: '産学連携',
+      bottomNav: "",
+      color: '#FFF'
     }
+  },
+    created() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        this.user = user ? user : {}
+        console.log(this.user.uid)
+      } else {
+        // No user is signed in.
+        this.$router.push("/login")
+      }
+    })
   }
 }
 </script>

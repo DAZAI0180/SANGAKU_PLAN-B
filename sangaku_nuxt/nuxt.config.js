@@ -30,11 +30,13 @@ export default {
   ** Global CSS
   */
   css: [
+    "firebaseui/dist/firebaseui.css"
   ],
   /*
   ** Plugins to load before mounting the App
   */
   plugins: [
+     { src: "~plugins/persistedstate.js", ssr: false }
   ],
   /*
   ** Nuxt.js modules
@@ -75,5 +77,9 @@ export default {
     */
     extend(config, ctx) {
     }
-  }
+  },
+
+  //  router: {
+  //    middleware: ['authenticated']
+  //  },
 }
