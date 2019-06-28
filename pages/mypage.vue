@@ -3,8 +3,11 @@
 
 <p>{{user.uid}}</p>
 <p>{{user.displayName}}</p>
-<v-btn color="info" @click="kakikomi">書き込みスイッチ</v-btn>
      <button v-on:click="logout">ログアウト</button>
+           <form action @submit.prevent="sendMessage" class="form">
+        <textarea v-model="input" :disabled="!user"></textarea>
+        <v-btn color="info" type="submit" :disabled="!user" class="send-button">送信</v-btn>
+      </form>
 <li v-for="(value,index) in text" :key="index">
   {{ value }}</li>
 </div>
@@ -39,7 +42,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {
-      if (user) {
         // User is signed in.
         //userにログインしているユーザーのデータを入れる
         this.user = user ? user : {}
@@ -48,28 +50,33 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         //itemコレクションを選択（コレクションについては各自調べてください）
         var docRef = db.collection("item");
         //データ取得の条件を指定して取得
-        var query = docRef.where('id','==',user.uid).get()
+        var query = docRef.where('id','==',user.uid);
         //取ってきたデータを全てtext配列に入れる
-        .then(snapshot => {
-          snapshot.forEach(doc => {
 
-            this.text.push(doc.data().text);
-            //console.log(doc.id, '=>', doc.data().text);
+    //変更や追加を感知したら全部持ってくる
+    //   query.onSnapshot((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       this.text.push(doc.data().text);
+    //     });
+    // }
+    // );
 
-          });
-        }).catch(err => {
-          console.log('Error getting documents', err);
-        });
+    //変更や追加された分だけ持ってくる
+    query.onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(item => {
+          this.text.push(item.doc.data().text);
+        })
+    })
 
-      } else {
-        // No user is signed in.
-        //this.$router.push("/login")
-      }
+ 
+
+
+
     })
   },
     methods : {
       ...mapActions(['setUser']), 
-      kakikomi(){
+      sendMessage(){
         firebase.auth().onAuthStateChanged(user => {
             this.user = user ? user : {}
             //console.log(this.user.uid)
@@ -77,9 +84,10 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             var data = {
               id: user.uid,
               name: 'おちょおちょとちぃドアノブべろちょ２',
-              text: 'おちょおちょとちぃドアノブべろちょ２',
+              text: this.input,
             };
             var setDoc = db.collection('item').doc().set(data);
+            this.input = ""; // フォームを空にする
         })
       },
       logout() {
