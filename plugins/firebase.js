@@ -4,13 +4,13 @@ import firebase from 'firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 if (!firebase.apps.length) {
   firebase.initializeApp({
-    apiKey: "AIzaSyB7QlmnVY6Kzf_CtZHqq-SfnNi1vhZ1km8",
-    authDomain: "sangaku-e415d.firebaseapp.com",
-    databaseURL: "https://sangaku-e415d.firebaseio.com",
-    projectId: "sangaku-e415d",
+    apiKey: "AIzaSyBsZEgFl80r9iIvffPjcTka-sBv8b51uvM",
+    authDomain: "sangakuproject-e6177.firebaseapp.com",
+    databaseURL: "https://sangakuproject-e6177.firebaseio.com",
+    projectId: "sangakuproject-e6177",
     storageBucket: "",
-    messagingSenderId: "178873445816",
-    appId: "1:178873445816:web:d675f2928d039a05"
+    messagingSenderId: "459633720918",
+    appId: "1:459633720918:web:cdc88d907e6f7882"
   })
 }
 

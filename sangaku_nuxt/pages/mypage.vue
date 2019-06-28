@@ -72,7 +72,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             const db = firebase.firestore()
             var data = {
               id: user.uid,
-              text: 'おちょおちょとちぃドアノブべろちょ２',
+              text: 'みうらくんの脱糞ラーメン',
             };
             var setDoc = db.collection('item').doc().set(data);
         })

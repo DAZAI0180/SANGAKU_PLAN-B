@@ -5,6 +5,8 @@
 <p>{{user.displayName}}</p>
 <v-btn color="info" @click="kakikomi">書き込みスイッチ</v-btn>
      <button v-on:click="logout">ログアウト</button>
+<li v-for="(value,index) in text" :key="index">
+  {{ value }}</li>
 </div>
 </template>
 
@@ -15,27 +17,22 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 
   export default {
   
-  /*export default {
-    async asyncData ({ app }) {
-      const data = await app.$axios.$get('http://localhost:8000/api/sega?ore=kimi')
-      return { data }
-    }
-  }*/
-  
-      fetch ({ store, redirect }) {
+      fetch ({ store, route,redirect }) {
       console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
       //console.log("リダイレクトなんだよなぁ")
+      if(route.name != "/login"){
       return redirect('/login')
-    }else{
-      console.log("リダイレクトせえへん")
+      }else{
+       return redirect('/mypage')
+      }
     }
     
   },
     data() {
     return {
       user: {},  // ユーザー情報
-      chat: [],  // 取得したメッセージを入れる配列
+      text: [],  // 取得したメッセージを入れる配列
       input: ''  // 入力したメッセージ
     }
     //console.log(user);
@@ -44,14 +41,21 @@ import { mapActions, mapState, mapGetters } from 'vuex'
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
+        //userにログインしているユーザーのデータを入れる
         this.user = user ? user : {}
-        //console.log(this.user.uid)
+        //firestore設定
         const db = firebase.firestore()
+        //itemコレクションを選択（コレクションについては各自調べてください）
         var docRef = db.collection("item");
+        //データ取得の条件を指定して取得
         var query = docRef.where('id','==',user.uid).get()
+        //取ってきたデータを全てtext配列に入れる
         .then(snapshot => {
           snapshot.forEach(doc => {
-            console.log(doc.id, '=>', doc.data());
+
+            this.text.push(doc.data().text);
+            //console.log(doc.id, '=>', doc.data().text);
+
           });
         }).catch(err => {
           console.log('Error getting documents', err);
@@ -64,7 +68,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
     })
   },
     methods : {
-      ...mapActions(['setUser']),
+      ...mapActions(['setUser']), 
       kakikomi(){
         firebase.auth().onAuthStateChanged(user => {
             this.user = user ? user : {}
@@ -72,6 +76,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             const db = firebase.firestore()
             var data = {
               id: user.uid,
+              name: 'おちょおちょとちぃドアノブべろちょ２',
               text: 'おちょおちょとちぃドアノブべろちょ２',
             };
             var setDoc = db.collection('item').doc().set(data);
@@ -91,20 +96,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
     },
   
 };
-  // const db = firebase.firestore()
-  // var docRef = db.collection("item");
-  // console.log(userid);
-  // var query = docRet.where('id','==',user.uid)
 
-  // docRef.get().then(function(doc) {
-  //     if (doc.exists) {
-  //         console.log("Document data:", doc.data());
-  //     } else {
-  //         // doc.data() will be undefined in this case
-  //         console.log("No such document!");
-  //     }
-  // }).catch(function(error) {
-  //     console.log("Error getting document:", error);
-  // });
 
 </script>

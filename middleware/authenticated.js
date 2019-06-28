@@ -1,8 +1,6 @@
-export default{
-  async fetch ({ store, redirect }) {
-    console.log("うごいた");
-  if (store.state.user.user == "") {
-    return redirect('/login')
-  }
-}
+export default function ({ store, redirect }) {
+  // ユーザーが認証されていないとき
+  // if (!store.state.user.user) {
+  //   return redirect('/login')
+  // }
 }
