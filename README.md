@@ -1,23 +1,22 @@
-phpのサーバー立てるコマンド
-php artisan serve
+# SANGAKU
 
-vueのサーバー立てるコマンド
-yarn run dev
+> My stylish Nuxt.js project
 
-nuxt側
-<script>
-  export default {
-    async asyncData ({ app }) {
-      const data = await app.$axios.$get('http://localhost:8000/api/sega?ore=kimi')
-      return { data }
-    }
-  }
-</script>
+## Build Setup
 
-Laravel側のルーティング
-Route::get('/sega', 'Api\HelloController@index');
+``` bash
+# install dependencies
+$ yarn install
 
-getはこんな感じで受け取れる
-public function index(Request $request){
-        echo $request->get('ore');
-    }
+# serve with hot reload at localhost:3000
+$ yarn run dev
+
+# build for production and launch server
+$ yarn run build
+$ yarn start
+
+# generate static project
+$ yarn run generate
+```
+
+For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
