@@ -1,59 +1,51 @@
 <template>
-<div>
-
-<div id="firebaseui-auth-container"></div>
-<div id="loader">Loading...</div>
-</div>
+  <v-layout>
+    <v-flex xs12 sm6 offset-sm3>
+      <v-card>
+        <v-container grid-list-sm fluid>
+          <v-layout row wrap>
+            <v-flex
+              v-for="n in 27"
+              :key="n"
+              xs4
+              d-flex
+            >
+              <v-card flat tile class="d-flex">
+                <v-img
+                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                  :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+                  aspect-ratio="1"
+                  class="grey lighten-2"
+                >
+                  <template v-slot:placeholder>
+                    <v-layout
+                      fill-height
+                      align-center
+                      justify-center
+                      ma-0
+                    >
+                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                    </v-layout>
+                  </template>
+                </v-img>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
-//import firebase from '~/plugins/firebase'
-//import { mapActions, mapState, mapGetters } from 'vuex'
-if (process.browser) {
-var firebase = require('firebase');
-var firebaseui = require('firebaseui-ja');
-require("firebaseui-ja/dist/firebaseui.css");
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-ui.start('#firebaseui-auth-container', {
-  signInOptions: [
-    // List of OAuth providers supported.
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-    firebase.auth.GithubAuthProvider.PROVIDER_ID
-  ],
-  // Other config options...
-});
-
-var uiConfig = {
-  callbacks: {
-    signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-      // User successfully signed in.
-      // Return type determines whether we continue the redirect automatically
-      // or whether we leave that to developer to handle.
-      return true;
-    },
-    uiShown: function() {
-      // The widget is rendered.
-      // Hide the loader.
-      document.getElementById('loader').style.display = 'none';
+  export default {
+   
+    /*
+    async asyncData ({ app }) {
+      const data = await app.$axios.$get(`http://localhost/api`)
+      return { data }
     }
-  },
-  // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
-  signInFlow: 'popup',
-  signInSuccessUrl: '<url-to-redirect-to-on-success>',
-  signInOptions: [
-    // Leave the lines as is for the providers you want to offer your users.
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-    firebase.auth.TwitterAuthProvider.PROVIDER_ID
-  ],
-  // Terms of service url.
-  tosUrl: '<your-tos-url>',
-  // Privacy policy url.
-  privacyPolicyUrl: '<your-privacy-policy-url>'
-  
-};ui.start('#firebaseui-auth-container', uiConfig);
-}
+    */
+  }
 </script>

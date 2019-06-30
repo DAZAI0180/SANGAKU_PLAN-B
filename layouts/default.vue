@@ -22,7 +22,7 @@
 
  <v-bottom-nav :value="true" :active.sync="bottomNav"
  :fixed=true >
-  <v-btn color="teal" flat value="recent" to = "/home" >
+  <v-btn color="teal" flat value="recent" to = "/" >
     <span>ホーム</span>
     <v-icon>home</v-icon>
   </v-btn>

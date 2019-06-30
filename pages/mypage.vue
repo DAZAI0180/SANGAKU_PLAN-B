@@ -53,14 +53,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         var query = docRef.where('id','==',user.uid);
         //取ってきたデータを全てtext配列に入れる
 
-    //変更や追加を感知したら全部持ってくる
-    //   query.onSnapshot((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       this.text.push(doc.data().text);
-    //     });
-    // }
-    // );
-
     //変更や追加された分だけ持ってくる
     query.onSnapshot(snapshot => {
         snapshot.docChanges().forEach(item => {
@@ -68,10 +60,13 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         })
     })
 
- 
-
-
-
+        //変更や追加を感知したら全部持ってくる
+    //   query.onSnapshot((querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       this.text.push(doc.data().text);
+    //     });
+    // }
+    // );
     })
   },
     methods : {
