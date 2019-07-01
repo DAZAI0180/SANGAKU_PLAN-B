@@ -31,10 +31,10 @@ export default {
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           this.$store.dispatch('user/fecthUser', "id" )
-          self.$router.push("/mypage")
-          //console.log(this.user)
+          this.$router.push("/mypage")
+          // console.log("リダイレクトするはず")
         } else {
-          //console.log('no login')
+          this.$router.push("/login")
         }
       })
       
@@ -46,10 +46,11 @@ export default {
       if (user) {
         // User is signed in.
         this.$store.dispatch('user/fecthUser', "id" )
-        self.$router.push("/mypage")
+        this.$router.push("/mypage")
         //console.log(this.user)
         } else {
           // No user is signed in.
+          this.$router.push("/login")
         }
       })
       
