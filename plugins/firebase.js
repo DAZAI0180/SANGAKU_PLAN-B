@@ -7,8 +7,8 @@ if (!firebase.apps.length) {
     apiKey: "AIzaSyBsZEgFl80r9iIvffPjcTka-sBv8b51uvM",
     authDomain: "sangakuproject-e6177.firebaseapp.com",
     databaseURL: "https://sangakuproject-e6177.firebaseio.com",
+    storageBucket: "sangakuproject-e6177.appspot.com",
     projectId: "sangakuproject-e6177",
-    storageBucket: "",
     messagingSenderId: "459633720918",
     appId: "1:459633720918:web:cdc88d907e6f7882"
   })

@@ -1,35 +1,56 @@
 <template>
-<div>
+  <v-layout>
 
-<p>{{user.uid}}</p>
-<p>{{user.displayName}}</p>
-     <!-- <button v-on:click="logout">ログアウト</button> -->
-           <form action @submit.prevent="sendMessage" class="form">
-        <textarea v-model="input" :disabled="!user"></textarea>
-                             <v-text-field
-                  label="Select Image"
-                  @click="pickFile"
-                  v-model="imageName"
-                  prepend-icon="attach_file"
-                ></v-text-field>
-                <input
-                  type="file"
-                  style="display: none"
-                  ref="image"
-                  accept="image/*"
-                  @change="onFilePicked"
-                />
-        <v-btn color="info" type="submit" :disabled="!user" class="send-button">送信</v-btn>
+    <v-flex>
+      <form action @submit.prevent="sendMessage" class="form">
+      <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+        &emsp;商品名を入力してください
+      </p>
+      <v-flex xs12 sm6 md3>
+        <v-text-field
+          label=""
+          solo
+          v-model="title"
+        ></v-text-field>
+      </v-flex>
+
+      <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+        &emsp;画像を追加してください
+      </p>
+      <v-text-field
+        label="Select Image"
+        @click="pickFile"
+        v-model="imageName"
+        prepend-icon="attach_file"
+      ></v-text-field>
+      <input
+        type="file"
+        style="display: none"
+        ref="image"
+        accept="image/*"
+        @change="onFilePicked"
+      />
+
+      <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+        &emsp;商品の説明を入力してください
+      </p>
+      <v-flex xs12>
+        <v-textarea
+          solo
+          name="input-7-4"
+          v-model="input"
+          label=""
+          value=""
+          height=150
+        ></v-textarea>
+      </v-flex>
+      <v-flex xs12>
+          <v-btn color="red" round large type="submit" style="width:44%">出品する</v-btn>
+          <v-btn color="blue" round large style="width:44%">キャンセル</v-btn>
+      </v-flex>
       </form>
-
-                <v-spacer></v-spacer>
-<li v-for="(value,index) in text" :key="index">
-  {{ value.text }}
-                  <img :src= "value.url" >
-                 </li>
-
-  
-</div>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -56,6 +77,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       user: {},  // ユーザー情報
       text: [],  // 取得したメッセージを入れる配列
       input: '',  // 入力したメッセージ
+      title: '',
       photo: null,
       photo_url: null,
       dialog: false,
@@ -64,35 +86,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       imageFile: ""
     }
     //console.log(user);
-  },
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-        // User is signed in.
-        //userにログインしているユーザーのデータを入れる
-        this.user = user ? user : {}
-        //firestore設定
-        const db = firebase.firestore()
-        //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("item");
-        //データ取得の条件を指定して取得
-        var query = docRef.where('id','==',user.uid);
-        //取ってきたデータを全てtext配列に入れる
-
-    //変更や追加された分だけ持ってくる
-    query.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(item => {
-          this.text.push(item.doc.data());
-        })
-    })
-
-        //変更や追加を感知したら全部持ってくる
-    //   query.onSnapshot((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       this.text.push(doc.data().text);
-    //     });
-    // }
-    // );
-    })
   },
     methods : {
       ...mapActions(['setUser']), 
@@ -121,6 +114,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                     var data = {
                     id: user.uid,
                     name: user.displayName,
+                    title:this.title,
                     text: this.input,
                     category: "食べ物",
                     url: this.imageUrl,
@@ -128,17 +122,20 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                   };
                   // console.log(this.imageUrl);
                   var setDoc = db.collection('item').doc().set(data);
+
+                              this.input = "";
+            this.imageName= "",
+            this.imageUrl = "",
+            this.imageFile = "",
+            this.title = ""
                   //console.log(setDoc);
               });
             });
             
             // console.log(this.imageUrl);
-            var setDoc = db.collection('item').doc().set(data);
+            //var setDoc = db.collection('item').doc().set(data);
              // フォームを空にする
-            this.input = "";
-            this.imageName= "",
-            this.imageUrl = "",
-            this.imageFile = ""
+
         })
       },
       pickFile() {
@@ -163,23 +160,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         this.imageFile = "";
         this.imageUrl = "";
       }
-    },
-
-    // 画像アップロード処理
-    upload: function() {
-      var me = this;
-      const db = firebase.firestore();
-      // ストレージオブジェクト作成
-      var storageRef = firebase.storage().ref();
-      // ファイルのパスを設定
-      var mountainsRef = storageRef.child(`images/${this.imageName}`);
-      // ファイルを適用してファイルアップロード開始
-      mountainsRef.put(this.imageFile).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(downloadURL => {
-          this.imageUrl = downloadURL;
-          db.collection("images").add({ downloadURL });
-        });
-      });
     },
 
       logout() {
