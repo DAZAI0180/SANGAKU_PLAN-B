@@ -42,7 +42,7 @@
 import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
-
+import uuid from 'uuid'
   export default {
   
       fetch ({ store, route,redirect }) {
@@ -109,6 +109,8 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             const db = firebase.firestore()
             // ストレージオブジェクト作成
             var storageRef = firebase.storage().ref();
+            //ファイル名が被らないように一意な名前を作成
+            this.imageName = uuid();
             // ファイルのパスを設定
             var mountainsRef = storageRef.child(`images/${this.imageName}`);
             // ファイルを適用してファイルアップロード開始
@@ -127,17 +129,14 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                   };
                   // console.log(this.imageUrl);
                   var setDoc = db.collection('item').doc().set(data);
+                  this.input = "";
+                  this.imageName= "",
+                  this.imageUrl = "",
+                  this.imageFile = ""
                   //console.log(setDoc);
               });
             });
-            
-            // console.log(this.imageUrl);
-            var setDoc = db.collection('item').doc().set(data);
-             // フォームを空にする
-            this.input = "";
-            this.imageName= "",
-            this.imageUrl = "",
-            this.imageFile = ""
+          
         })
       },
       timeCreate() {

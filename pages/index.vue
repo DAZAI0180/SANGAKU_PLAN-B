@@ -13,7 +13,7 @@
             >
               <v-card flat tile>
                 <img
-                  src="https://firebasestorage.googleapis.com/v0/b/sangakuproject-e6177.appspot.com/o/images%2Fdotlive_chieri_20180930.png?alt=media&token=69930a31-3874-4e8c-9ab7-4c86eb6b2697"
+                  src="https://firebasestorage.googleapis.com/v0/b/sangakuproject-e6177.appspot.com/o/images%2FC1eF-L3UkAE3uNV_orig.jpg?alt=media&token=d3710748-2de6-4885-bc9d-b35b637ffe27"
                   width="100px"
                   height="100px"
                   

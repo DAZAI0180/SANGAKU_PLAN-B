@@ -18,16 +18,43 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 export default {
   //ログインしていたらマイページにリダイレクト
     fetch ({ store, route,redirect }) {
+      
     if (store.state.user.user) {
       return redirect('/mypage')
     }
   },
+  created() {
+    // firebase.auth().onAuthStateChanged(user => {
+    //   if (user) {
+    //     // User is signed in.
+    //     this.$store.dispatch('user/fecthUser', "id" )
+    //     this.$router.push("/mypage")
+    //     } else {
+    //       this.$router.push("/login")
+    //     }
+    //     //firestore設定
+    // });
+    },
+    mounted() {
+            firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        console.log(user.uid);
+        // User is signed in.
+        this.$store.dispatch('user/fecthUser', "id" )
+        this.$router.push("/mypage")
+        } else {
+          this.$router.push("/login")
+        }
+        //firestore設定
+    });
+      
+    },
     methods : {
       ...mapActions(['setUser']),
 
     twitterLogin () {
       var provider = new firebase.auth.TwitterAuthProvider()
-      firebase.auth().signInWithPopup(provider)
+      .signInWithPopup(provider)
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           this.$store.dispatch('user/fecthUser', "id" )
@@ -41,15 +68,20 @@ export default {
     },
     googleLogin () {
       const provider = new firebase.auth.GoogleAuthProvider()
-      firebase.auth().signInWithRedirect(provider)
-            firebase.auth().onAuthStateChanged(user => {
+      //これどっちがいいのか不明なので２つおいておく
+      // firebase.auth().signInWithRedirect(provider)
+      firebase.auth().signInWithPopup(provider)
+          //       .then(url => {
+          //   // アップロード完了処理 (ローカルメンバに保存したり)
+          //   this.fileName = fileName
+          //   this.imageUrl = url
+          // })
+      firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
         this.$store.dispatch('user/fecthUser', "id" )
         this.$router.push("/mypage")
-        //console.log(this.user)
         } else {
-          // No user is signed in.
           this.$router.push("/login")
         }
       })
