@@ -87,6 +87,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
     }
     //console.log(user);
   },
+  
     methods : {
       ...mapActions(['setUser']), 
       sendMessage(){
@@ -103,6 +104,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
               snapshot.ref.getDownloadURL().then(downloadURL => {
                 this.imageUrl = downloadURL;
                 //db.collection("images").add({ downloadURL });
+                console.log(this.input);
                     var d = new Date();
                     var year  = d.getFullYear();
                     var month = d.getMonth() + 1;
@@ -123,7 +125,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                   // console.log(this.imageUrl);
                   var setDoc = db.collection('item').doc().set(data);
 
-                              this.input = "";
+            this.input = "";
             this.imageName= "",
             this.imageUrl = "",
             this.imageFile = "",

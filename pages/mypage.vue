@@ -1,9 +1,10 @@
 <template>
+<v-container>
 <div>
 
 <p>{{user.uid}}</p>
 <p>{{user.displayName}}</p>
-     <!-- <button v-on:click="logout">ログアウト</button> -->
+     <button v-on:click="logout">ログアウト</button> 
            <form action @submit.prevent="sendMessage" class="form">
         <textarea v-model="input" :disabled="!user"></textarea>
                              <v-text-field
@@ -24,12 +25,17 @@
 
                 <v-spacer></v-spacer>
 <li v-for="(value,index) in text" :key="index">
-  {{ value.text }}
-                  <img :src= "value.url" >
+  <!-- <p style="white-space: pre;">{{ value.text }}</p> -->
+  <pre>{{ value.text }}</pre>
+                  <img :src= "value.url" 
+                  width=100px;
+                  height=100px; >
+                                  
                  </li>
 
   
 </div>
+</v-container>
 </template>
 
 <script>
@@ -110,14 +116,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
               snapshot.ref.getDownloadURL().then(downloadURL => {
                 this.imageUrl = downloadURL;
                 //db.collection("images").add({ downloadURL });
-                    var d = new Date();
-                    var year  = d.getFullYear();
-                    var month = d.getMonth() + 1;
-                    var day   = d.getDate();
-                    var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-                    var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-                    var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-                    var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
+                    var time = timeCreate();
                     var data = {
                     id: user.uid,
                     name: user.displayName,
@@ -140,6 +139,17 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             this.imageUrl = "",
             this.imageFile = ""
         })
+      },
+      timeCreate() {
+        var d = new Date();
+        var year  = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day   = d.getDate();
+        var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
+        var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
+        var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
+        var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
+        return time;
       },
       pickFile() {
       this.$refs.image.click();

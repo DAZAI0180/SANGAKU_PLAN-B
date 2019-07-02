@@ -14,12 +14,10 @@
     </v-toolbar>
     
     <v-content>
-      <v-container>
         <nuxt />
-      </v-container>
     </v-content>
 
-
+ <v-card height="60px" flat>
  <v-bottom-nav :value="true" :active.sync="bottomNav"
  :fixed=true >
   <v-btn color="teal" flat value="recent" to = "/" >
@@ -46,6 +44,7 @@
         <v-icon>accessibility</v-icon>
       </v-btn>
     </v-bottom-nav>
+    </v-card>
 
   </v-app>
   

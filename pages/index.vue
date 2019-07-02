@@ -1,51 +1,39 @@
 <template>
-  <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
-      <v-card>
-        <v-container grid-list-sm fluid>
+      <v-card light>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+        <v-container v-bind="{ [`grid-list-${size}`]: true }" fluid >
           <v-layout row wrap>
             <v-flex
-              v-for="n in 27"
+              v-for="n in 18"
               :key="n"
               xs4
-              d-flex
+              md3
             >
-              <v-card flat tile class="d-flex">
-                <v-img
-                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                  :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                  aspect-ratio="1"
-                  class="grey lighten-2"
+              <v-card flat tile>
+                <img
+                  src="https://firebasestorage.googleapis.com/v0/b/sangakuproject-e6177.appspot.com/o/images%2Fdotlive_chieri_20180930.png?alt=media&token=69930a31-3874-4e8c-9ab7-4c86eb6b2697"
+                  width="100px"
+                  height="100px"
+                  
                 >
-                  <template v-slot:placeholder>
-                    <v-layout
-                      fill-height
-                      align-center
-                      justify-center
-                      ma-0
-                    >
-                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                    </v-layout>
-                  </template>
-                </v-img>
+                <p>商品名</p>
               </v-card>
             </v-flex>
           </v-layout>
         </v-container>
+        
       </v-card>
-    </v-flex>
-  </v-layout>
+      
 </template>
 
 <script>
 
-  export default {
-   
-    /*
-    async asyncData ({ app }) {
-      const data = await app.$axios.$get(`http://localhost/api`)
-      return { data }
-    }
-    */
-  }
+export default {
+  data: () => ({
+    size: "sm",
+    items: []
+  })
+};
 </script>
