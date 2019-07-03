@@ -54,7 +54,7 @@ export default {
 
     twitterLogin () {
       var provider = new firebase.auth.TwitterAuthProvider()
-      .signInWithPopup(provider)
+      firebase.auth().signInWithPopup(provider)
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           this.$store.dispatch('user/fecthUser', "id" )
