@@ -1,35 +1,58 @@
 <template>
-      <v-card light>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-         <v-container grid-list-md text-xs-center>
-          <v-layout row wrap >
+  <v-layout>
+    <v-flex xs12 sm6 offset-sm3>
+    <v-card>
+      <v-btn fab dark large color="black">
+        <v-icon dark>person</v-icon>
+      </v-btn >
+      <a>{{ item.title }}</a>
+       <v-container grid-list-sm fluid>
+          <v-layout row wrap>
             <v-flex
+              v-for="n in 6"
+              :key="n"
               xs4
-              md3
-              v-for="(value,index) in item" :key="index"
-              style="margin-left:0px"
+              d-flex
             >
-              <v-card flat tile style="width:100%">
-                <nuxt-link :to="{path: '/item', query: {itemId: value.itemId }}">
-                <img
-                  :src= "value.url"
-                  width="100%"
-                  height="100px"
-                  style = "object-fit: cover"
+              <v-card flat tile class="d-flex">
+                <v-img
+                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
+                  :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
+                  aspect-ratio="1"
+                  class="grey lighten-2"
                 >
-                <p style="text-align:center">{{value.title}}</p>
-                </nuxt-link>
+                <v-layout column fill-height >
+                  
+                  <v-spacer></v-spacer>
+                  <v-flex shrink xs1>
+                  <div id="item_name">商品名</div>
+                  </v-flex>
+                </v-layout>
+                  <template v-slot:placeholder>
+                    <v-layout
+                      fill-height
+                      align-center
+                      justify-center
+                      ma-0
+                    >
+                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                    </v-layout>
+                  </template>
+                </v-img>
               </v-card>
-              
             </v-flex>
-            
           </v-layout>
+          <br><div id ="kategori">
+          <v-btn>{{item.category}}</v-btn>
+          </div>
+          <br><pre>{{item.text}}</pre>
+          <br><div id="syonin">
+          <v-btn large round color="yellow" dark>申請をする</v-btn>
+          </div>
         </v-container>
-        
-      </v-card>
-      
+    </v-card> 
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -38,7 +61,7 @@ import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import uuid from 'uuid'
   export default {
-  
+
       fetch ({ store, route,redirect }) {
       console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
@@ -54,8 +77,9 @@ import uuid from 'uuid'
     data() {
     return {
       user: {},  // ユーザー情報
-      item: [],  // 商品一覧
+      item: '',  // 商品一覧
       input: '',  // 入力したメッセージ
+      itemId : 'default ID',
       photo: null,
       photo_url: null,
       dialog: false,
@@ -65,6 +89,11 @@ import uuid from 'uuid'
     }
     //console.log(user);
   },
+    asyncData(context) {
+    return {
+      itemId: context.query['itemId']
+    }
+  },
   created() {
     firebase.auth().onAuthStateChanged(user => {
         // User is signed in.
@@ -73,33 +102,36 @@ import uuid from 'uuid'
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("item").orderBy("created_at", "desc");
-        //データ取得の条件を指定して取得
-        // var query = docRef.where('id','==',user.uid);
-        //取ってきたデータを全てtext配列に入れる
+        var docRef = db.collection("item").doc(this.itemId);
+        
+        docRef.get().then(doc => {
+            if (doc.exists) {
+                this.item = doc.data();
+                // console.log(this.item);
+            } else {
+                // doc.data() will be undefined in this case
+                console.log("No such document!");
+            }
+        }).catch(function(error) {
+            console.log("Error getting document:", error);
+        });
+
 
     //変更や追加された分だけ持ってくる
-    docRef.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(item => {
-          //console.log(item.doc.id);
-          //item.doc.data().item_id = item.doc.id;
-            let data = {
-            'itemId': item.doc.id,
-            'title': item.doc.data().title,
-            'url': item.doc.data().url
-          }
-          //console.log(item.doc.data);
-          this.item.push(data);
-        })
-    })
+    // docRef.onSnapshot(snapshot => {
+    //     snapshot.docChanges().forEach(item => {
+    //       //console.log(item.doc.id);
+    //       //item.doc.data().item_id = item.doc.id;
+    //         let data = {
+    //         'itemId': item.doc.id,
+    //         'title': item.doc.data().title,
+    //         'url': item.doc.data().url
+    //       }
+    //       //console.log(item.doc.data);
+    //       this.item.push(data);
+    //     })
+    // })
 
-        //変更や追加を感知したら全部持ってくる
-    //   query.onSnapshot((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       this.text.push(doc.data().text);
-    //     });
-    // }
-    // );
     })
   },
     methods : {
@@ -210,3 +242,20 @@ import uuid from 'uuid'
 
 
 </script>
+
+<style>
+#item_name{
+text-align: center;
+background-color:darkgrey;
+}
+</style>
+<style>
+#kategori{
+  text-align: center;
+}
+</style>
+<style>
+#syonin{
+  text-align: center;
+}
+</style>

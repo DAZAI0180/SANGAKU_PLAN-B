@@ -2,7 +2,7 @@
   <v-layout>
 
     <v-flex>
-      <form action @submit.prevent="sendMessage" class="form">
+      <form action @submit.prevent="putUp" class="form">
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品名を入力してください
       </p>
@@ -14,7 +14,7 @@
         ></v-text-field>
       </v-flex>
 
-      <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+      <p style="width:100%; margin:0px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;画像を追加してください
       </p>
       <v-text-field
@@ -59,15 +59,13 @@ import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
   export default {
-  
+    
       fetch ({ store, route,redirect }) {
-      console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
-      //console.log("リダイレクトなんだよなぁ")
       if(route.name != "/login"){
-      return redirect('/login')
+        return redirect('/login')
       }else{
-       return redirect('/mypage')
+        return redirect('/mypage')
       }
     }
     
@@ -85,12 +83,11 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       imageUrl: "",
       imageFile: ""
     }
-    //console.log(user);
   },
   
     methods : {
       ...mapActions(['setUser']), 
-      sendMessage(){
+      putUp(){
         firebase.auth().onAuthStateChanged(user => {
             this.user = user ? user : {}
             //console.log(this.user.uid)
@@ -105,14 +102,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                 this.imageUrl = downloadURL;
                 //db.collection("images").add({ downloadURL });
                 console.log(this.input);
-                    var d = new Date();
-                    var year  = d.getFullYear();
-                    var month = d.getMonth() + 1;
-                    var day   = d.getDate();
-                    var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-                    var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-                    var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-                    var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
+                    var time = this.timeCreate();
                     var data = {
                     id: user.uid,
                     name: user.displayName,
@@ -125,20 +115,28 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                   // console.log(this.imageUrl);
                   var setDoc = db.collection('item').doc().set(data);
 
-            this.input = "";
-            this.imageName= "",
-            this.imageUrl = "",
-            this.imageFile = "",
-            this.title = ""
+                  //フォームを空にする
+                    this.input = "";
+                    this.imageName= "",
+                    this.imageUrl = "",
+                    this.imageFile = "",
+                    this.title = ""
                   //console.log(setDoc);
               });
             });
             
-            // console.log(this.imageUrl);
-            //var setDoc = db.collection('item').doc().set(data);
-             // フォームを空にする
-
         })
+      },
+        timeCreate() {
+        var d = new Date();
+        var year  = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day   = d.getDate();
+        var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
+        var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
+        var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
+        var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
+        return time;
       },
       pickFile() {
       this.$refs.image.click();
