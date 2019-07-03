@@ -18,23 +18,10 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 export default {
   //ログインしていたらマイページにリダイレクト
     fetch ({ store, route,redirect }) {
-      
-    if (store.state.user.user) {
-      return redirect('/mypage')
-    }
+      if (store.state.user.user) {
+        return redirect('/mypage')
+      }
   },
-  created() {
-    // firebase.auth().onAuthStateChanged(user => {
-    //   if (user) {
-    //     // User is signed in.
-    //     this.$store.dispatch('user/fecthUser', "id" )
-    //     this.$router.push("/mypage")
-    //     } else {
-    //       this.$router.push("/login")
-    //     }
-    //     //firestore設定
-    // });
-    },
     mounted() {
             firebase.auth().onAuthStateChanged(user => {
       if (user) {
