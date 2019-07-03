@@ -1,41 +1,25 @@
 <template>
-<v-container>
-<div>
-
-<p>{{user.uid}}</p>
-<p>{{user.displayName}}</p>
-     <button v-on:click="logout">ログアウト</button> 
-           <form action @submit.prevent="sendMessage" class="form">
-        <textarea v-model="input" :disabled="!user"></textarea>
-                             <v-text-field
-                  label="Select Image"
-                  @click="pickFile"
-                  v-model="imageName"
-                  prepend-icon="attach_file"
-                ></v-text-field>
-                <input
-                  type="file"
-                  style="display: none"
-                  ref="image"
-                  accept="image/*"
-                  @change="onFilePicked"
-                />
-        <v-btn color="info" type="submit" :disabled="!user" class="send-button">送信</v-btn>
-      </form>
-
-                <v-spacer></v-spacer>
-<li v-for="(value,index) in text" :key="index">
-  <!-- <p style="white-space: pre;">{{ value.text }}</p> -->
-  <pre>{{ value.text }}</pre>
-                  <img :src= "value.url" 
-                  width=100px;
-                  height=100px; >
-                                  
-                 </li>
-
-  
-</div>
-</v-container>
+  <div>
+    <v-card>
+      <p>
+        <v-icon>person</v-icon>
+        {{user.displayName}}
+      </p>
+    </v-card>
+    <v-card style="padding-top:10px;padding-bottom:10px;">
+    <!-- <p>いいね！・閲覧履歴</p> -->
+    <p>出品したお土産</p>
+    <!-- <p>交換した商品</p> -->
+    <p>取引中のお土産</p>
+    <p>申請中のお土産</p>
+    </v-card>
+    <v-card>
+        <p><span class="cyan--text">ガイド・お問い合わせ</span></p>
+        <p>ガイド</p>
+        <p>お問い合わせ</p>
+        <p>Q&A</p>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -208,3 +192,9 @@ import uuid from 'uuid'
 
 
 </script>
+<style scoped>
+p {
+  margin-left: 15px;
+  margin-top: 10px;
+}
+</style>

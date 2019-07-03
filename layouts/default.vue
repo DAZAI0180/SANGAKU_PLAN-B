@@ -29,6 +29,7 @@
         color="teal"
         flat
         value="favorites"
+        to="item_create"
       >
         <span>出品</span>
         <v-icon>photo_camera</v-icon>
