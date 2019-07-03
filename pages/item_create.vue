@@ -57,7 +57,7 @@
 import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
-
+import uuid from 'uuid'
   export default {
     
       fetch ({ store, route,redirect }) {
