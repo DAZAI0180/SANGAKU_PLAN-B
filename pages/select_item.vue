@@ -86,7 +86,7 @@ new Vue({
         //itemコレクションを選択（コレクションについては各自調べてください）
         var docRef = db.collection("item");
         // var query = docRef.orderBy("created_at", "asc");
-        var query = docRef.where("id", "==", this.user.uid).where('created_at', '>=', '0');
+        var query = docRef.where("id", "==", this.user.uid).where('created_at', '>=', '0').orderBy("created_at", "desc");
 
 
       //変更や追加された分だけ持ってくる
