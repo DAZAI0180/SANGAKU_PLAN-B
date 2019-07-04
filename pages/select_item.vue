@@ -1,60 +1,38 @@
 <template>
-  <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
-    <v-card>
-      <v-btn fab dark large color="black">
-        <v-icon dark>person</v-icon>
-      </v-btn >
-      <a>{{ item.title }}</a>
-       <v-container grid-list-sm fluid>
-          <v-layout row wrap>
+      <v-card light>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+        </v-card-actions>
+         <v-container grid-list-md text-xs-center>
+          <v-layout row wrap >
             <v-flex
-              v-for="n in 6"
-              :key="n"
               xs4
-              d-flex
+              md3
+              v-for="(value,index) in item" :key="index"
+              style="margin-left:0px"
             >
-            
-              <v-card flat tile class="d-flex">
-
-                <v-img
-                  :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                  :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                  aspect-ratio="1"
-                  class="grey lighten-2"
+              <v-card flat tile style="width:100%">
+                <!-- <nuxt-link :to="{path: '/item', query: {itemId: value.itemId }}"> -->
+                <input type="checkbox" :id="value.itemId" :value="value.itemId" v-model="checkedNames">
+                <label :for="value.itemId">
+                <img
+                  :src= "value.url"
+                  width="100%"
+                  height="100px"
+                  style = "object-fit: cover"
                 >
-                <v-layout column fill-height >
-                  
-                  <v-spacer></v-spacer>
-                  <v-flex shrink xs1>
-                  <div id="item_name">商品名</div>
-                  </v-flex>
-                </v-layout>
-                  <template v-slot:placeholder>
-                    <v-layout
-                      fill-height
-                      align-center
-                      justify-center
-                      ma-0
-                    >
-                      <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                    </v-layout>
-                  </template>
-                </v-img>
+                </label>
+                <p style="text-align:center">{{value.title}}</p>
+                <!-- </nuxt-link> -->
               </v-card>
+              
             </v-flex>
+            
           </v-layout>
-          <br><div id ="kategori">
-          <v-btn>{{item.category}}</v-btn>
-          </div>
-          <br><pre>{{item.text}}</pre>
-          <br><div id="syonin">
-          <v-btn large round color="yellow" dark>申請をする</v-btn>
-          </div>
         </v-container>
-    </v-card> 
-    </v-flex>
-  </v-layout>
+        
+      </v-card>
+      
 </template>
 
 <script>
@@ -62,8 +40,15 @@ import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import uuid from 'uuid'
+import Vue from 'vue'
+new Vue({
+  el: '#example-3',
+  data: {
+    checkedNames: []
+  }
+})
   export default {
-
+  
       fetch ({ store, route,redirect }) {
       console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
@@ -79,9 +64,9 @@ import uuid from 'uuid'
     data() {
     return {
       user: {},  // ユーザー情報
-      item: '',  // 商品一覧
+      item: [],  // 商品一覧
+      checkedNames: [],
       input: '',  // 入力したメッセージ
-      itemId : 'default ID',
       photo: null,
       photo_url: null,
       dialog: false,
@@ -91,11 +76,6 @@ import uuid from 'uuid'
     }
     //console.log(user);
   },
-    asyncData(context) {
-    return {
-      itemId: context.query['itemId']
-    }
-  },
   created() {
     firebase.auth().onAuthStateChanged(user => {
         // User is signed in.
@@ -104,37 +84,38 @@ import uuid from 'uuid'
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("item").doc(this.itemId);
-        
-        docRef.get().then(doc => {
-            if (doc.exists) {
-                this.item = doc.data();
-                // console.log(this.item);
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
+        var docRef = db.collection("item");
+        // var query = docRef.orderBy("created_at", "asc");
+        var query = docRef.where("id", "==", this.user.uid).where('created_at', '>=', '0');
+
+
+      //変更や追加された分だけ持ってくる
+      query.onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(item => {
+            if(item.doc.data().id == this.user.uid){
+              let data = {
+              'itemId': item.doc.id,
+              'title': item.doc.data().title,
+              'url': item.doc.data().url
             }
-        }).catch(function(error) {
-            console.log("Error getting document:", error);
-        });
+            //console.log(item.doc.data);
+            this.item.push(data);
+            }
+          })
+      })
 
-
-    //変更や追加された分だけ持ってくる
-    // docRef.onSnapshot(snapshot => {
-    //     snapshot.docChanges().forEach(item => {
-    //       //console.log(item.doc.id);
-    //       //item.doc.data().item_id = item.doc.id;
-    //         let data = {
-    //         'itemId': item.doc.id,
-    //         'title': item.doc.data().title,
-    //         'url': item.doc.data().url
-    //       }
-    //       //console.log(item.doc.data);
-    //       this.item.push(data);
-    //     })
-    // })
-
-    })
+      // db.collection("item").where("id", "==", this.user.uid).orderBy("created_at", "desc")
+      //     .get()
+      //     .then(function(querySnapshot) {
+      //         querySnapshot.forEach(function(doc) {
+      //             // doc.data() is never undefined for query doc snapshots
+      //             console.log(doc.id, " => ", doc.data());
+      //         });
+      //     })
+      //     .catch(function(error) {
+      //         console.log("Error getting documents: ", error);
+      //     });
+     })
   },
     methods : {
       ...mapActions(['setUser']), 
@@ -244,20 +225,3 @@ import uuid from 'uuid'
 
 
 </script>
-
-<style>
-#item_name{
-text-align: center;
-background-color:darkgrey;
-}
-</style>
-<style>
-#kategori{
-  text-align: center;
-}
-</style>
-<style>
-#syonin{
-  text-align: center;
-}
-</style>

@@ -17,7 +17,7 @@
       <p style="width:100%; margin:0px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;画像を追加してください
       </p>
-      <v-text-field
+      <!-- <v-text-field
         label="Select Image"
         @click="pickFile"
         v-model="imageName"
@@ -29,8 +29,26 @@
         ref="image"
         accept="image/*"
         @change="onFilePicked"
+      /> -->
+  <div class="contents">
+    <label v-show="!uploadedImage" class="input-item__label"
+      >画像を選択
+      <input type="file" @change="onFileChange" />
+    </label>
+    <div class="preview-item">
+      <img
+        v-show="uploadedImage"
+        class="preview-item-file"
+        :src="uploadedImage"
+        alt=""
+        width="100px"
       />
-
+      <div v-show="uploadedImage" class="preview-item-btn" @click="remove">
+        <p class="preview-item-name">{{ img_name }}</p>
+        <e-icon class="preview-item-icon">close</e-icon>
+      </div>
+    </div>
+  </div>
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品の説明を入力してください
       </p>
@@ -81,7 +99,10 @@ import uuid from 'uuid'
       dialog: false,
       imageName: "",
       imageUrl: "",
-      imageFile: ""
+      imageFile: "",
+      //危険度５
+      uploadedImage: '',
+      img_name: '',
     }
   },
   
@@ -95,6 +116,8 @@ import uuid from 'uuid'
             // ストレージオブジェクト作成
             var storageRef = firebase.storage().ref();
             // ファイルのパスを設定
+
+            this.imageName = uuid();
             var mountainsRef = storageRef.child(`images/${this.imageName}`);
             // ファイルを適用してファイルアップロード開始
             mountainsRef.put(this.imageFile).then(snapshot => {
@@ -172,10 +195,45 @@ import uuid from 'uuid'
         }).catch((error) => {
           alert(error)
         })
-      }
+      },
+onFileChange(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      this.createImage(files[0]);
+      this.img_name = files[0].name;
     },
+    // アップロードした画像を表示
+    createImage(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        this.uploadedImage = e.target.result;
+        console.log(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    },
+    remove() {
+      this.uploadedImage = false;
+    },
+    }
+    
   
 };
 
 
 </script>
+<style>
+label > input {
+  display: none;
+}
+
+label {
+  padding: 0 1rem;
+  border: solid 1px #888;
+} 
+
+label::after {
+  content: '+';
+  font-size: 1rem;
+  color: #888;
+  padding-left: 1rem;
+}
+</style>
