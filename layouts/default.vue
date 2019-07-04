@@ -99,7 +99,7 @@ export default {
       if (user) {
         // User is signed in.
         this.user = user ? user : {}
-        console.log(this.user.uid)
+        //console.log(this.user.uid)
       } else {
         // No user is signed in.
         this.$router.push("/login")

@@ -38,6 +38,7 @@ export default {
   plugins: [
      { src: "~plugins/persistedstate.js", ssr: false },
      '~/plugins/cookie-storage.js',
+     { src: '~/plugins/vue-qrcode-reader', ssr: false },
      //{ src: '~plugins/localStorage', ssr: false },
   ],
   /*

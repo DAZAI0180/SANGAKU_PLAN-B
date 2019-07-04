@@ -2,7 +2,7 @@
   <v-layout>
 
     <v-flex>
-      <form action @submit.prevent="sendMessage" class="form">
+      <form action @submit.prevent="putUp" class="form">
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品名を入力してください
       </p>
@@ -14,10 +14,10 @@
         ></v-text-field>
       </v-flex>
 
-      <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+      <p style="width:100%; margin:0px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;画像を追加してください
       </p>
-      <v-text-field
+      <!-- <v-text-field
         label="Select Image"
         @click="pickFile"
         v-model="imageName"
@@ -29,8 +29,26 @@
         ref="image"
         accept="image/*"
         @change="onFilePicked"
+      /> -->
+  <div class="contents">
+    <label v-show="!uploadedImage" class="input-item__label"
+      >画像を選択
+      <input type="file" @change="onFileChange" />
+    </label>
+    <div class="preview-item">
+      <img
+        v-show="uploadedImage"
+        class="preview-item-file"
+        :src="uploadedImage"
+        alt=""
+        width="100px"
       />
-
+      <div v-show="uploadedImage" class="preview-item-btn" @click="remove">
+        <p class="preview-item-name">{{ img_name }}</p>
+        <e-icon class="preview-item-icon">close</e-icon>
+      </div>
+    </div>
+  </div>
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品の説明を入力してください
       </p>
@@ -57,17 +75,15 @@
 import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
-
+import uuid from 'uuid'
   export default {
-  
+    
       fetch ({ store, route,redirect }) {
-      console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
-      //console.log("リダイレクトなんだよなぁ")
       if(route.name != "/login"){
-      return redirect('/login')
+        return redirect('/login')
       }else{
-       return redirect('/mypage')
+        return redirect('/mypage')
       }
     }
     
@@ -83,14 +99,16 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       dialog: false,
       imageName: "",
       imageUrl: "",
-      imageFile: ""
+      imageFile: "",
+      //危険度５
+      uploadedImage: '',
+      img_name: '',
     }
-    //console.log(user);
   },
   
     methods : {
       ...mapActions(['setUser']), 
-      sendMessage(){
+      putUp(){
         firebase.auth().onAuthStateChanged(user => {
             this.user = user ? user : {}
             //console.log(this.user.uid)
@@ -98,6 +116,8 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             // ストレージオブジェクト作成
             var storageRef = firebase.storage().ref();
             // ファイルのパスを設定
+
+            this.imageName = uuid();
             var mountainsRef = storageRef.child(`images/${this.imageName}`);
             // ファイルを適用してファイルアップロード開始
             mountainsRef.put(this.imageFile).then(snapshot => {
@@ -105,14 +125,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                 this.imageUrl = downloadURL;
                 //db.collection("images").add({ downloadURL });
                 console.log(this.input);
-                    var d = new Date();
-                    var year  = d.getFullYear();
-                    var month = d.getMonth() + 1;
-                    var day   = d.getDate();
-                    var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-                    var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-                    var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-                    var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
+                    var time = this.timeCreate();
                     var data = {
                     id: user.uid,
                     name: user.displayName,
@@ -125,20 +138,28 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                   // console.log(this.imageUrl);
                   var setDoc = db.collection('item').doc().set(data);
 
-            this.input = "";
-            this.imageName= "",
-            this.imageUrl = "",
-            this.imageFile = "",
-            this.title = ""
+                  //フォームを空にする
+                    this.input = "";
+                    this.imageName= "",
+                    this.imageUrl = "",
+                    this.imageFile = "",
+                    this.title = ""
                   //console.log(setDoc);
               });
             });
             
-            // console.log(this.imageUrl);
-            //var setDoc = db.collection('item').doc().set(data);
-             // フォームを空にする
-
         })
+      },
+        timeCreate() {
+        var d = new Date();
+        var year  = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day   = d.getDate();
+        var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
+        var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
+        var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
+        var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
+        return time;
       },
       pickFile() {
       this.$refs.image.click();
@@ -174,10 +195,45 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         }).catch((error) => {
           alert(error)
         })
-      }
+      },
+onFileChange(e) {
+      const files = e.target.files || e.dataTransfer.files;
+      this.createImage(files[0]);
+      this.img_name = files[0].name;
     },
+    // アップロードした画像を表示
+    createImage(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        this.uploadedImage = e.target.result;
+        console.log(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    },
+    remove() {
+      this.uploadedImage = false;
+    },
+    }
+    
   
 };
 
 
 </script>
+<style>
+label > input {
+  display: none;
+}
+
+label {
+  padding: 0 1rem;
+  border: solid 1px #888;
+} 
+
+label::after {
+  content: '+';
+  font-size: 1rem;
+  color: #888;
+  padding-left: 1rem;
+}
+</style>

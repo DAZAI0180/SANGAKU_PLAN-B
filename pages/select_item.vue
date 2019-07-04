@@ -13,8 +13,8 @@
             >
               <v-card flat tile style="width:100%">
                 <!-- <nuxt-link :to="{path: '/item', query: {itemId: value.itemId }}"> -->
-                <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
-                <label for="jack">
+                <input type="checkbox" :id="value.itemId" :value="value.itemId" v-model="checkedNames">
+                <label :for="value.itemId">
                 <img
                   :src= "value.url"
                   width="100%"
@@ -40,6 +40,13 @@ import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import uuid from 'uuid'
+import Vue from 'vue'
+new Vue({
+  el: '#example-3',
+  data: {
+    checkedNames: []
+  }
+})
   export default {
   
       fetch ({ store, route,redirect }) {
@@ -58,6 +65,7 @@ import uuid from 'uuid'
     return {
       user: {},  // ユーザー情報
       item: [],  // 商品一覧
+      checkedNames: [],
       input: '',  // 入力したメッセージ
       photo: null,
       photo_url: null,
@@ -76,34 +84,38 @@ import uuid from 'uuid'
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("item").orderBy("created_at", "desc");
-        //データ取得の条件を指定して取得
-        // var query = docRef.where('id','==',user.uid);
-        //取ってきたデータを全てtext配列に入れる
+        var docRef = db.collection("item");
+        // var query = docRef.orderBy("created_at", "asc");
+        var query = docRef.where("id", "==", this.user.uid).where('created_at', '>=', '0');
 
-    //変更や追加された分だけ持ってくる
-    docRef.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(item => {
-          //console.log(item.doc.id);
-          //item.doc.data().item_id = item.doc.id;
-            let data = {
-            'itemId': item.doc.id,
-            'title': item.doc.data().title,
-            'url': item.doc.data().url
-          }
-          //console.log(item.doc.data);
-          this.item.push(data);
-        })
-    })
 
-        //変更や追加を感知したら全部持ってくる
-    //   query.onSnapshot((querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       this.text.push(doc.data().text);
-    //     });
-    // }
-    // );
-    })
+      //変更や追加された分だけ持ってくる
+      query.onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(item => {
+            if(item.doc.data().id == this.user.uid){
+              let data = {
+              'itemId': item.doc.id,
+              'title': item.doc.data().title,
+              'url': item.doc.data().url
+            }
+            //console.log(item.doc.data);
+            this.item.push(data);
+            }
+          })
+      })
+
+      // db.collection("item").where("id", "==", this.user.uid).orderBy("created_at", "desc")
+      //     .get()
+      //     .then(function(querySnapshot) {
+      //         querySnapshot.forEach(function(doc) {
+      //             // doc.data() is never undefined for query doc snapshots
+      //             console.log(doc.id, " => ", doc.data());
+      //         });
+      //     })
+      //     .catch(function(error) {
+      //         console.log("Error getting documents: ", error);
+      //     });
+     })
   },
     methods : {
       ...mapActions(['setUser']), 

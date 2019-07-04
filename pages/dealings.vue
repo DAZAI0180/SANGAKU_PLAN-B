@@ -103,7 +103,7 @@ Vue.prototype.$sanitize = sanitizeHTML
     //変更や追加された分だけ持ってくる
     docRef.onSnapshot(snapshot => {
         snapshot.docChanges().forEach(item => {
-          console.log(item.doc.data());
+          // console.log(item.doc.data());
            this.text.push(item.doc.data());
         })
     })
