@@ -17,7 +17,7 @@
       <p style="width:100%; margin:0px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;画像を追加してください
       </p>
-      <!-- <v-text-field
+      <v-text-field
         label="Select Image"
         @click="pickFile"
         v-model="imageName"
@@ -29,8 +29,8 @@
         ref="image"
         accept="image/*"
         @change="onFilePicked"
-      /> -->
-  <div class="contents">
+      />
+  <!-- <div class="contents">
     <label v-show="!uploadedImage" class="input-item__label"
       >画像を選択
       <input type="file" @change="onFileChange" />
@@ -48,7 +48,7 @@
         <e-icon class="preview-item-icon">close</e-icon>
       </div>
     </div>
-  </div>
+  </div> -->
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品の説明を入力してください
       </p>
