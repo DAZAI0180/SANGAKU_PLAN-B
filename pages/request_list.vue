@@ -41,7 +41,9 @@ import uuid from 'uuid'
   export default {
   
       fetch ({ store, route,redirect }) {
+      console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
+      //console.log("リダイレクトなんだよなぁ")
       if(route.name != "/login"){
       return redirect('/login')
       }else{
@@ -55,7 +57,12 @@ import uuid from 'uuid'
       user: {},  // ユーザー情報
       item: [],  // 商品一覧
       input: '',  // 入力したメッセージ
+      photo: null,
+      photo_url: null,
       dialog: false,
+      imageName: "",
+      imageUrl: "",
+      imageFile: ""
     }
     //console.log(user);
   },
@@ -67,42 +74,58 @@ import uuid from 'uuid'
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("item").orderBy("created_at", "desc");
-        //データ取得の条件を指定して取得
+        var docRef = db.collection('users').doc(this.user.uid).collection('request');
 
     //変更や追加された分だけ持ってくる
     docRef.onSnapshot(snapshot => {
         snapshot.docChanges().forEach(item => {
-          //console.log(item.doc.id);
-          //item.doc.data().item_id = item.doc.id;
-            let data = {
-            'itemId': item.doc.id,
-            'title': item.doc.data().title,
-            'url': item.doc.data().url
-          }
-          //console.log(item.doc.data);
-          this.item.push(data);
+
+          console.log(item.doc.data());
+          //this.item.push(data);
         })
     })
-
 
     })
   },
     methods : {
       ...mapActions(['setUser']), 
-      // timeCreate() {
-      //   var d = new Date();
-      //   var year  = d.getFullYear();
-      //   var month = d.getMonth() + 1;
-      //   var day   = d.getDate();
-      //   var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-      //   var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-      //   var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-      //   var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
-      //   return time;
-      // },
-
-
+      sendMessage(){
+        firebase.auth().onAuthStateChanged(user => {
+            this.user = user ? user : {}
+            //console.log(this.user.uid)
+            const db = firebase.firestore()
+            // ストレージオブジェクト作成
+            var storageRef = firebase.storage().ref();
+            //ファイル名が被らないように一意な名前を作成
+            this.imageName = uuid();
+            // ファイルのパスを設定
+            var mountainsRef = storageRef.child(`images/${this.imageName}`);
+            // ファイルを適用してファイルアップロード開始
+            mountainsRef.put(this.imageFile).then(snapshot => {
+              snapshot.ref.getDownloadURL().then(downloadURL => {
+                this.imageUrl = downloadURL;
+                //db.collection("images").add({ downloadURL });
+                    var time = timeCreate();
+                    var data = {
+                    id: user.uid,
+                    name: user.displayName,
+                    text: this.input,
+                    category: "食べ物",
+                    url: this.imageUrl,
+                    created_at:time,
+                  };
+                  // console.log(this.imageUrl);
+                  var setDoc = db.collection('item').doc().set(data);
+                  this.input = "";
+                  this.imageName= "",
+                  this.imageUrl = "",
+                  this.imageFile = ""
+                  //console.log(setDoc);
+              });
+            });
+          
+        })
+      },
 
 
 
