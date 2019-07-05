@@ -123,9 +123,6 @@ import uuid from 'uuid'
             mountainsRef.put(this.imageFile).then(snapshot => {
               snapshot.ref.getDownloadURL().then(downloadURL => {
                 this.imageUrl = downloadURL;
-                //db.collection("images").add({ downloadURL });
-                console.log(this.input);
-                    var time = this.timeCreate();
                     var data = {
                     id: user.uid,
                     name: user.displayName,
@@ -133,33 +130,37 @@ import uuid from 'uuid'
                     text: this.input,
                     category: "食べ物",
                     url: this.imageUrl,
-                    created_at:time,
+                    created_at:new Date(),
                   };
-                  // console.log(this.imageUrl);
-                  var setDoc = db.collection('item').doc().set(data);
-
-                  //フォームを空にする
-                    this.input = "";
+                  db.collection('item').add(data)
+                  .then(docRef => {
+                    console.log(docRef.id);
+                    var data2 = {
+                    item_id: docRef.id,
+                    name: user.displayName,
+                    title:this.title,
+                    text: this.input,
+                    category: "食べ物",
+                    url: this.imageUrl,
+                    created_at:new Date(),
+                  };
+                  console.log(data2);
+                    db.collection("users/"+this.user.uid+"/item").doc().set(data2);
+                     this.input = "";
                     this.imageName= "",
                     this.imageUrl = "",
                     this.imageFile = "",
                     this.title = ""
+                  });
+                  // console.log(setDoc.id);
+                  // var setDoc2 = db.collection("users/"+this.user.uid+"/item").doc().set(data);
+                  //フォームを空にする
+
                   //console.log(setDoc);
               });
             });
             
         })
-      },
-        timeCreate() {
-        var d = new Date();
-        var year  = d.getFullYear();
-        var month = d.getMonth() + 1;
-        var day   = d.getDate();
-        var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-        var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-        var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-        var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
-        return time;
       },
       pickFile() {
       this.$refs.image.click();

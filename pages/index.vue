@@ -13,15 +13,13 @@
             >
               <v-card flat tile style="width:100%">
                 <nuxt-link :to="{path: '/item', query: {itemId: value.itemId }}">
-                <!-- <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
-                <label for="jack"> -->
+
                 <img
                   :src= "value.url"
                   width="100%"
                   height="100px"
                   style = "object-fit: cover"
                 >
-                <!-- </label> -->
                 <p style="text-align:center">{{value.title}}</p>
                 </nuxt-link>
               </v-card>

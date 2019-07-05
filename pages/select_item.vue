@@ -4,7 +4,8 @@
           <v-spacer></v-spacer>
         </v-card-actions>
          <v-container grid-list-md text-xs-center>
-          <v-layout row wrap >
+          <v-layout row wrap class="scroll">
+            
             <v-flex
               xs4
               md3
@@ -12,9 +13,9 @@
               style="margin-left:0px"
             >
               <v-card flat tile style="width:100%">
-                <!-- <nuxt-link :to="{path: '/item', query: {itemId: value.itemId }}"> -->
-                <input type="checkbox" :id="value.itemId" :value="value.itemId" v-model="checkedNames">
-                <label :for="value.itemId">
+                <input type="checkbox" :id="value.item_id" :value="value.item_id" v-model="checkedNames"
+                style="position:relative;top:25px;right:50px" v-on:change="selectCount">
+                <label :for="value.item_id">
                 <img
                   :src= "value.url"
                   width="100%"
@@ -23,12 +24,25 @@
                 >
                 </label>
                 <p style="text-align:center">{{value.title}}</p>
-                <!-- </nuxt-link> -->
               </v-card>
               
             </v-flex>
             
           </v-layout>
+                <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+        &emsp;メッセージを添えてみましょう
+      </p>
+      <v-flex xs12>
+        <v-textarea
+          solo
+          name="input-7-4"
+          v-model="input"
+          label=""
+          value=""
+          height=150
+        ></v-textarea>
+      </v-flex>
+            <v-btn large round color="yellow" dark>申請を送信</v-btn>
         </v-container>
         
       </v-card>
@@ -40,17 +54,16 @@ import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import uuid from 'uuid'
-import Vue from 'vue'
-new Vue({
-  el: '#example-3',
-  data: {
-    checkedNames: []
-  }
-})
+// import Vue from 'vue'
+// new Vue({
+//   el: '#example-3',
+//   data: {
+//     checkedNames: []
+//   }
+// })
   export default {
   
       fetch ({ store, route,redirect }) {
-      console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
       //console.log("リダイレクトなんだよなぁ")
       if(route.name != "/login"){
@@ -65,16 +78,19 @@ new Vue({
     return {
       user: {},  // ユーザー情報
       item: [],  // 商品一覧
-      checkedNames: [],
       input: '',  // 入力したメッセージ
       photo: null,
       photo_url: null,
       dialog: false,
       imageName: "",
       imageUrl: "",
-      imageFile: ""
+      imageFile: "",
+      checkedNames: [],
+      checked:false
     }
-    //console.log(user);
+  },
+  mounted() {
+
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {
@@ -84,41 +100,31 @@ new Vue({
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("item");
+        var docRef = db.collection("users/"+this.user.uid+"/item");
         // var query = docRef.orderBy("created_at", "asc");
-        var query = docRef.where("id", "==", this.user.uid).where('created_at', '>=', '0').orderBy("created_at", "desc");
-
 
       //変更や追加された分だけ持ってくる
-      query.onSnapshot(snapshot => {
+      docRef.onSnapshot(snapshot => {
           snapshot.docChanges().forEach(item => {
-            if(item.doc.data().id == this.user.uid){
-              let data = {
-              'itemId': item.doc.id,
-              'title': item.doc.data().title,
-              'url': item.doc.data().url
-            }
-            //console.log(item.doc.data);
-            this.item.push(data);
-            }
+
+            this.item.push(item.doc.data());
+            
           })
       })
 
-      // db.collection("item").where("id", "==", this.user.uid).orderBy("created_at", "desc")
-      //     .get()
-      //     .then(function(querySnapshot) {
-      //         querySnapshot.forEach(function(doc) {
-      //             // doc.data() is never undefined for query doc snapshots
-      //             console.log(doc.id, " => ", doc.data());
-      //         });
-      //     })
-      //     .catch(function(error) {
-      //         console.log("Error getting documents: ", error);
-      //     });
+
      })
   },
     methods : {
       ...mapActions(['setUser']), 
+          selectCount(id){
+            if(this.checkedNames.length <= 1){
+              this.checked = true;
+            }else{
+              this.checked = false;
+            }
+    console.log(this.checkedNames);
+    },
       sendMessage(){
         firebase.auth().onAuthStateChanged(user => {
             this.user = user ? user : {}
@@ -144,13 +150,11 @@ new Vue({
                     url: this.imageUrl,
                     created_at:time,
                   };
-                  // console.log(this.imageUrl);
                   var setDoc = db.collection('item').doc().set(data);
                   this.input = "";
                   this.imageName= "",
                   this.imageUrl = "",
                   this.imageFile = ""
-                  //console.log(setDoc);
               });
             });
           
@@ -222,6 +226,11 @@ new Vue({
     },
   
 };
-
-
 </script>
+<style>
+
+        .scroll {
+        height: 300px;
+        overflow-y: scroll;
+    }
+</style>

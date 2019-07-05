@@ -49,7 +49,9 @@
           </div>
           <br><pre>{{item.text}}</pre>
           <br><div id="syonin">
-          <v-btn large round color="yellow" dark>申請をする</v-btn>
+              <nuxt-link :to="{path: '/select_item', query: {itemId: itemId }}">
+                <v-btn large round color="yellow" dark>申請を作成</v-btn>
+              </nuxt-link>
           </div>
         </v-container>
     </v-card> 
