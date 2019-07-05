@@ -57,7 +57,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
   },
     methods : {
       ...mapActions(['setUser']), 
-      
 
       logout() {
         const self = this
