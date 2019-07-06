@@ -1,6 +1,5 @@
 <template>
 <v-container grid-list-md text-xs-center>
-<div>
     <maincard />
     <div class="item">
         <p> 出品した商品 </p>
@@ -29,8 +28,10 @@
           >
           <p class="notNewLine">{{item1.title}}</p>
             </nuxt-link>
-            <input type="radio" :id="item1.itemId" :value="item1.itemId" v-model="picked" style="display:none;">
-            <v-btn :color="btnColor1" v-on:click="itemSelect(item1.itemId,'item1')">これならOK</v-btn>
+            <v-layout justify-center>
+              <input type="radio" :id="item1.itemId" :value="item1.itemId" v-model="picked" style="display:none;">
+              <v-btn :color="btnColor1" v-on:click="itemSelect(item1.itemId,'item1')">これならOK</v-btn>
+            </v-layout>
         </v-card>
       </v-flex>
 
@@ -48,8 +49,10 @@
           >
           <p class="notNewLine">{{item2.title}}</p>
             </nuxt-link>
-            <input type="radio" :id="item2.itemId" :value="item2.itemId" v-model="picked" style="display:none;">
-            <v-btn :color="btnColor2" v-on:click="itemSelect(item2.itemId,'item2')">これならOK</v-btn>
+            <v-layout justify-center>
+              <input type="radio" :id="item2.itemId" :value="item2.itemId" v-model="picked" style="display:none;">
+              <v-btn :color="btnColor2" v-on:click="itemSelect(item2.itemId,'item2')">これならOK</v-btn>
+            </v-layout>
         </v-card>
          
       </v-flex>
@@ -67,15 +70,16 @@
           >
           <p class="notNewLine">{{item3.title}}</p>
           </nuxt-link>
+          <v-layout justify-center>
             <input type="radio" :id="item3.itemId" :value="item3.itemId" v-model="picked" style="display:none;">
             <v-btn :color="btnColor3" v-on:click="itemSelect(item3.itemId,'item3')">これならOK</v-btn>
+          </v-layout>
         </v-card>
       </v-flex>
     </v-layout>
-    <!-- <p>{{requestData.text}}</p>
-    <span>Picked: {{ picked }}</span> -->
-    <v-btn type="submit" :disabled="!checked" large round color="yellow" >申請を許可</v-btn>
-    </div>
+   <p>{{requestData.text}}</p>
+    <!-- <span>Picked: {{ picked }}</span> -->
+    <v-btn class="align-center" type="submit" :disabled="!checked" large round color="yellow" >申請を許可</v-btn>
     </v-container>
 </template>
 <script>
@@ -211,28 +215,7 @@ import uuid from 'uuid'
   margin: 0;
   padding: 0;
 }
-.apply {
-  overflow: hidden;
 
-  height: 160px;
-  margin-top: 10px;
-  padding: 0;
-  color: #2c2c2f;
-  background: #cde4ff; /*背景色*/
-}
-.applypro {
-  margin-right: 10px;
-  float: left;
-}
-.apply p {
-  font-size: 20px;
-  margin: 0;
-  padding: 0;
-}
-
-.apply img {
-  margin: auto;
-}
 
 /*改行させるかよ*/
 .notNewLine{
