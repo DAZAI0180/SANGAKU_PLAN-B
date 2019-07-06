@@ -69,7 +69,7 @@ import uuid from 'uuid'
       if(route.name != "/login"){
       return redirect('/login')
       }else{
-       return redirect('/mypage')
+       return redirect('/mypage/')
       }
     }
     

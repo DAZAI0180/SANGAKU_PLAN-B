@@ -146,7 +146,7 @@ import uuid from 'uuid'
                   };
                   console.log(data2);
                     db.collection("users/"+this.user.uid+"/item").doc().set(data2);
-                     this.input = "";
+                    this.input = "";
                     this.imageName= "",
                     this.imageUrl = "",
                     this.imageFile = "",
@@ -155,7 +155,6 @@ import uuid from 'uuid'
                   // console.log(setDoc.id);
                   // var setDoc2 = db.collection("users/"+this.user.uid+"/item").doc().set(data);
                   //フォームを空にする
-
                   //console.log(setDoc);
               });
             });

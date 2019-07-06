@@ -29,7 +29,7 @@
         color="teal"
         flat
         value="favorites"
-        to="item_create"
+        to="/item_create"
       >
         <span>出品</span>
         <v-icon>photo_camera</v-icon>
@@ -39,7 +39,7 @@
         color="teal"
         flat
         value="unko"
-        to = "/mypage"
+        to = "/mypage/"
       >
         <span>マイページ</span>
         <v-icon>accessibility</v-icon>

@@ -129,7 +129,9 @@ import uuid from 'uuid'
             var data = {
             user_id: user.uid,
             user_name: user.displayName,
-            target_user_id:this.itemId,
+            user_photo: user.photoURL,
+            //アイテムのIDやんけ
+            target_user_id: this.itemId,
             item1_id: this.checkedItems[0] ? this.checkedItems[0] : '',
             item2_id: this.checkedItems[1] ? this.checkedItems[1] : '',
             item3_id: this.checkedItems[2] ? this.checkedItems[2] : '',

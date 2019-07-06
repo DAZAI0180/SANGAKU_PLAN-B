@@ -12,6 +12,7 @@
     <!-- <p>交換した商品</p> -->
     <p>取引中のお土産</p>
     <p>申請中のお土産</p>
+    <nuxt-link to="/mypage/request_list"><p>届いた申請</p></nuxt-link>
     </v-card>
     <v-card>
         <p><span class="cyan--text">ガイド・お問い合わせ</span></p>
@@ -36,7 +37,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       if(route.name != "/login"){
       return redirect('/login')
       }else{
-       return redirect('/mypage')
+       return redirect('/mypage/')
       }
     }
     

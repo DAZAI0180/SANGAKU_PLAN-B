@@ -12,7 +12,7 @@
               style="margin-left:0px"
             >
               <v-card flat tile style="width:100%">
-                <nuxt-link :to="{path: '/item', query: {itemId: value.itemId }}">
+                <nuxt-link :to="{path: '/item_detail', query: {itemId: value.itemId }}">
 
                 <img
                   :src= "value.url"
@@ -45,7 +45,7 @@ import uuid from 'uuid'
       if(route.name != "/login"){
       return redirect('/login')
       }else{
-       return redirect('/mypage')
+       return redirect('/mypage/')
       }
     }
     
@@ -112,3 +112,8 @@ import uuid from 'uuid'
 
 
 </script>
+<style>
+a{
+  text-decoration: none !important;
+}
+</style>
