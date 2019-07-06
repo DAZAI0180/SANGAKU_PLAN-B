@@ -123,13 +123,11 @@ import uuid from 'uuid'
         }
     },
       sendRequest(){
-        firebase.auth().onAuthStateChanged(user => {
-            this.user = user ? user : {}
             const db = firebase.firestore()
-            var data = {
-            user_id: user.uid,
-            user_name: user.displayName,
-            user_photo: user.photoURL,
+            const data = {
+            user_id: this.user.uid,
+            user_name: this.user.displayName,
+            user_photo: this.user.photoURL,
             target_item_id: this.itemId,
             item1_id: this.checkedItems[0] ? this.checkedItems[0] : '',
             item2_id: this.checkedItems[1] ? this.checkedItems[1] : '',
@@ -137,11 +135,14 @@ import uuid from 'uuid'
             text: this.message,
             created_at:new Date(),
           };
+          //どれか１つでも初期化しないとアカウント切り替え時にバグる
+          this.user = '';
+          this.itemId = '';
+          this.message = '';
           db.collection('users').doc(this.userId).collection('request').doc().set(data).then(_ => {
             this.$router.push("/")
           });
 
-        })
       },
     },
   

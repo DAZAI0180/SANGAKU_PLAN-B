@@ -151,7 +151,9 @@ import uuid from 'uuid'
                     this.imageUrl = "",
                     this.imageFile = "",
                     this.title = ""
-                  });
+                  }).then(_ => {
+            this.$router.push("/")
+          });
                   // console.log(setDoc.id);
                   // var setDoc2 = db.collection("users/"+this.user.uid+"/item").doc().set(data);
                   //フォームを空にする
