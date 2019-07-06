@@ -130,16 +130,14 @@ import uuid from 'uuid'
             user_id: user.uid,
             user_name: user.displayName,
             user_photo: user.photoURL,
-            //アイテムのIDやんけ
-            target_user_id: this.itemId,
+            target_item_id: this.itemId,
             item1_id: this.checkedItems[0] ? this.checkedItems[0] : '',
             item2_id: this.checkedItems[1] ? this.checkedItems[1] : '',
             item3_id: this.checkedItems[2] ? this.checkedItems[2] : '',
             text: this.message,
             created_at:new Date(),
           };
-          var setDoc = db.collection('users').doc(this.userId).collection('request').doc().set(data)
-          .then(_ => {
+          db.collection('users').doc(this.userId).collection('request').doc().set(data).then(_ => {
             this.$router.push("/")
           });
 

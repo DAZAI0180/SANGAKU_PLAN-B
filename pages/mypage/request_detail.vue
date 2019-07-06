@@ -1,5 +1,6 @@
 <template>
 <v-container grid-list-md text-xs-center>
+  <form action @submit.prevent="sendRequestApproval" class="form">
     <maincard />
     <div class="item">
         <p> 出品した商品 </p>
@@ -80,7 +81,9 @@
    <p>{{requestData.text}}</p>
     <!-- <span>Picked: {{ picked }}</span> -->
     <v-btn class="align-center" type="submit" :disabled="!checked" large round color="yellow" >申請を許可</v-btn>
+    </form>
     </v-container>
+    
 </template>
 <script>
 import createPersistedState from 'vuex-persistedstate'
@@ -147,6 +150,15 @@ import uuid from 'uuid'
           const item3_id = this.requestData.item3_id;
           const itemDocRef = db.collection("item");
 
+          itemDocRef.doc(this.requestData.target_item_id).get().then(doc => {
+            let data = {
+              'itemId': doc.id ? doc.id: false,
+              'title': doc.data().title ? doc.data().title : '',
+              'url': doc.data().url ? doc.data().url : '',
+            }
+                this.targetItem = data;
+        })
+
           itemDocRef.doc(item1_id).get().then(doc => {
             let data = {
               'itemId': doc.id ? doc.id: false,
@@ -162,6 +174,7 @@ import uuid from 'uuid'
               'title': doc.data().title ? doc.data().title : '',
               'url': doc.data().url ? doc.data().url : '',
             }
+            console.log(this.requestData.target_user_id);
                 this.item2= data;
         })
 
@@ -171,17 +184,10 @@ import uuid from 'uuid'
               'title': doc.data().title ? doc.data().title : '',
               'url': doc.data().url ? doc.data().url : '',
             }
+            
                 this.item3 = data;
         })
 
-          itemDocRef.doc(this.requestData.target_user_id).get().then(doc => {
-            let data = {
-              'itemId': doc.id ? doc.id: false,
-              'title': doc.data().title ? doc.data().title : '',
-              'url': doc.data().url ? doc.data().url : '',
-            }
-                this.targetItem = data;
-        })
 
         });
          
@@ -198,7 +204,28 @@ import uuid from 'uuid'
         this.btnColor1 = itemPosition == "item1" ? "success" : "";
         this.btnColor2 = itemPosition == "item2" ? "success" : "";
         this.btnColor3 = itemPosition == "item3" ? "success" : "";
-      }
+      },
+      sendRequestApproval(){
+        firebase.auth().onAuthStateChanged(user => {
+            this.user = user ? user : {}
+            const db = firebase.firestore()
+            var data = {
+            user_id: this.user.uid,
+            target_user_id: this.requestData.user_id,
+            target_user_name: this.requestData.user_name,
+            target_user_photo: this.requestData.user_photo,
+            item_id: this.picked,
+            item_name: this.targetItem.title,
+            item_image:this.targetItem.url,
+            created_at:new Date(),
+          };
+          var setDoc = db.collection('users').doc(this.user.uid).collection('dealings').doc().set(data)
+          .then(_ => {
+            this.$router.push("/")
+          });
+
+        })
+      },
     },
   
 };
