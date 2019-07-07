@@ -100,8 +100,6 @@ export default {
         //itemコレクションを選択（コレクションについては各自調べてください）
         var docRef = db.collection("chat").doc(this.dealingsId).collection("messages");
         //データ取得の条件を指定して取得
-        //var query = docRef.where('id','==',user.uid);
-        //取ってきたデータを全てtext配列に入れる
 
         //変更や追加された分だけ持ってくる
         docRef.onSnapshot(snapshot => {
@@ -117,23 +115,17 @@ export default {
     ...mapActions(['setUser']), 
     sendMessage(){
       firebase.auth().onAuthStateChanged(user => {
-          this.user = user ? user : {}
-          //console.log(this.user.uid)
-          const db = firebase.firestore()
-              //db.collection("images").add({ downloadURL });
-                  var time = this.timeCreate();
-                  var data = {
-                  id: user.uid,
-                  name: user.displayName,
-                  message: this.message,
-                  created_at:new Date(),
-                };
-                // console.log(this.imageUrl);
-                var setDoc = db.collection("chat").doc(this.dealingsId).collection("messages").doc().set(data);;
-                // var setDoc = db.collection('item').doc().set(data);
-
-                this.message = "";
-
+        this.user = user ? user : {}
+        const db = firebase.firestore()
+            var data = {
+            id: user.uid,
+            name: user.displayName,
+            message: this.message,
+            created_at:new Date(),
+          };
+          var setDoc = db.collection("chat").doc(this.dealingsId).collection("messages").doc().set(data);
+          this.user = "";
+          this.message = "";
 
       })
     },
