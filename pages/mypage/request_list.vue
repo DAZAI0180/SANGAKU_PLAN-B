@@ -43,7 +43,7 @@
       <v-tab-item value="tab-2">
           <v-list three-line>
             <div v-for="(item, index) in dealings" :key="index" >
-              <nuxt-link :to="{path: '/mypage/request_detail', query: {requestId: item.request_id }}">
+              <nuxt-link :to="{path: '/mypage/dealings', query: {dealingsId: item.chatroom_id }}">
                 <v-list-tile
                   :key="item.item_id"
                   target_user_photo

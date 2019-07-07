@@ -26,6 +26,7 @@
 
                 <v-img
                   :src="item.image_url"
+                  height="200"
                   :lazy-src="item.user_photo"
                   aspect-ratio="1"
                   class="grey lighten-2"
@@ -57,7 +58,7 @@
           <br><v-pre xs1>{{item.item_text}}</v-pre>
           <br>
           <div id="syonin">
-            <nuxt-link :to="{path: '/request_edit', query: {itemId: itemId ,userId:item.id}}">
+            <nuxt-link :to="{path: '/request_edit', query: {itemId: itemId ,userId:item.user_id}}">
                 <v-btn large round color="yellow">申請を作成</v-btn>
             </nuxt-link>
           </div>
@@ -85,7 +86,7 @@ export default {
     }
     
   },
-    data() {
+  data() {
     return {
       user: {},  // ユーザー情報
       item: '',  // 商品一覧
@@ -93,7 +94,7 @@ export default {
       dialog: false,
     }
   },
-    asyncData(context) {
+  asyncData(context) {
     return {
       itemId: context.query['itemId']
     }

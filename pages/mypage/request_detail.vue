@@ -6,13 +6,13 @@
         <p> 出品した商品 </p>
         
         <img
-        :src= "targetItem.url"
+        :src= "targetItem.image_url"
         width="200px"
         height="100px"
         style = "object-fit: cover"       
         >
     </div>
-    <p>{{targetItem.title}}</p>
+    <p>{{targetItem.item_name}}</p>
     <v-layout row wrap >
       
       <v-flex
@@ -20,18 +20,18 @@
         md3
       >
         <v-card flat tile style="width:100%">
-            <nuxt-link :to="{path: '/item_detail', query: {itemId: item1.itemId }}">
+            <nuxt-link :to="{path: '/item_detail', query: {itemId: item1.item_id }}">
           <img
-            :src= "item1.url"
+            :src= "item1.image_url"
             width="100%"
             height="100px"
             style = "object-fit: cover"
           >
-          <p class="notNewLine">{{item1.title}}</p>
+          <p class="notNewLine">{{item1.item_name}}</p>
             </nuxt-link>
             <v-layout justify-center>
-              <input type="radio" :id="item1.itemId" :value="item1.itemId" v-model="picked" style="display:none;">
-              <v-btn :color="btnColor1" v-on:click="itemSelect(item1.itemId,'item1')">これならOK</v-btn>
+              <input type="radio" :id="item1.item_id" :value="item1.item_id" v-model="picked" style="display:none;">
+              <v-btn :color="btnColor1" v-on:click="itemSelect(item1,'item1')">これならOK</v-btn>
             </v-layout>
         </v-card>
       </v-flex>
@@ -40,19 +40,19 @@
         xs4
         md3
       >
-        <v-card flat tile style="width:100%" v-show="item2.itemId">
-            <nuxt-link :to="{path: '/item_detail', query: {itemId: item2.itemId }}">
+        <v-card flat tile style="width:100%" v-show="item2.item_id">
+            <nuxt-link :to="{path: '/item_detail', query: {itemId: item2.item_id }}">
           <img
-            :src= "item2.url"
+            :src= "item2.image_url"
             width="100%"
             height="100px"
             style = "object-fit: cover"
           >
-          <p class="notNewLine">{{item2.title}}</p>
+          <p class="notNewLine">{{item2.item_name}}</p>
             </nuxt-link>
             <v-layout justify-center>
-              <input type="radio" :id="item2.itemId" :value="item2.itemId" v-model="picked" style="display:none;">
-              <v-btn :color="btnColor2" v-on:click="itemSelect(item2.itemId,'item2')">これならOK</v-btn>
+              <input type="radio" :id="item2.item_id" :value="item2.item_id" v-model="picked" style="display:none;">
+              <v-btn :color="btnColor2" v-on:click="itemSelect(item2,'item2')">これならOK</v-btn>
             </v-layout>
         </v-card>
          
@@ -61,19 +61,19 @@
         xs4
         md3
       >
-        <v-card flat tile style="width:100%" v-show="item3.itemId">
-          <nuxt-link :to="{path: '/item_detail', query: {itemId: item3.itemId }}">
+        <v-card flat tile style="width:100%" v-show="item3.item_id">
+          <nuxt-link :to="{path: '/item_detail', query: {itemId: item3.item_id }}">
           <img
-            :src= "item3.url"
+            :src= "item3.image_url"
             width="100%"
             height="100px"
             style = "object-fit: cover"
           >
-          <p class="notNewLine">{{item3.title}}</p>
+          <p class="notNewLine">{{item3.item_name}}</p>
           </nuxt-link>
           <v-layout justify-center>
-            <input type="radio" :id="item3.itemId" :value="item3.itemId" v-model="picked" style="display:none;">
-            <v-btn :color="btnColor3" v-on:click="itemSelect(item3.itemId,'item3')">これならOK</v-btn>
+            <input type="radio" :id="item3.item_id" :value="item3.item_id" v-model="picked" style="display:none;">
+            <v-btn :color="btnColor3" v-on:click="itemSelect(item3,'item3')">これならOK</v-btn>
           </v-layout>
         </v-card>
       </v-flex>
@@ -144,38 +144,39 @@ export default {
         const item3_id = this.requestData.item3_id;
         const itemDocRef = db.collection("item");
 
+        
         itemDocRef.doc(this.requestData.target_item_id).get().then(doc => {
           let data = {
-            'itemId': doc.id ? doc.id: false,
-            'title': doc.data().title ? doc.data().title : '',
-            'url': doc.data().url ? doc.data().url : '',
+            'item_id': doc.id ? doc.id: false,
+            'item_name': doc.data().item_name ? doc.data().item_name : '',
+            'image_url': doc.data().image_url ? doc.data().image_url : '',
           }
           this.targetItem = data;
         })
 
         itemDocRef.doc(item1_id).get().then(doc => {
           let data = {
-            'itemId': doc.id ? doc.id: false,
-            'title': doc.data().title ? doc.data().title : '',
-            'url': doc.data().url ? doc.data().url : '',
+            'item_id': doc.id ? doc.id: false,
+            'item_name': doc.data().item_name ? doc.data().item_name : '',
+            'image_url': doc.data().image_url ? doc.data().image_url : '',
           }
           this.item1 = data;
         })
 
         itemDocRef.doc(item2_id).get().then(doc => {
           let data = {
-            'itemId': doc.id ? doc.id: false,
-            'title': doc.data().title ? doc.data().title : '',
-            'url': doc.data().url ? doc.data().url : '',
+            'item_id': doc.id ? doc.id: false,
+            'item_name': doc.data().item_name ? doc.data().item_name : '',
+            'image_url': doc.data().image_url ? doc.data().image_url : '',
           }
           this.item2= data;
         })
 
         itemDocRef.doc(item3_id).get().then(doc => {
           let data = {
-            'itemId': doc.id ? doc.id: false,
-            'title': doc.data().title ? doc.data().title : '',
-            'url': doc.data().url ? doc.data().url : '',
+            'item_id': doc.id ? doc.id: false,
+            'item_name': doc.data().item_name ? doc.data().item_name : '',
+            'image_url': doc.data().image_url ? doc.data().image_url : '',
           }
           this.item3 = data;
         })
@@ -190,6 +191,7 @@ export default {
       itemSelect(checkItem,itemPosition){
         this.picked = checkItem
         this.checked = true
+        console.log(this.picked);
         this.btnColor1 = itemPosition == "item1" ? "success" : "";
         this.btnColor2 = itemPosition == "item2" ? "success" : "";
         this.btnColor3 = itemPosition == "item3" ? "success" : "";
@@ -198,21 +200,50 @@ export default {
         firebase.auth().onAuthStateChanged(user => {
             this.user = user ? user : {}
             const db = firebase.firestore()
-            var data = {
-            user_id: this.user.uid,
-            target_user_id: this.requestData.user_id,
-            target_user_name: this.requestData.user_name,
-            target_user_photo: this.requestData.user_photo,
-            item_id: this.picked,
-            item_name: this.targetItem.title,
-            item_image:this.targetItem.url,
-            created_at:new Date(),
+            const chatId = uuid();
+            const data = {
+              //相手の
+              target_user_id: this.requestData.user_id,
+              target_user_name: this.requestData.user_name,
+              target_user_photo: this.requestData.user_photo,
+              target_item_id: this.picked.item_id,
+              target_item_name: this.picked.item_name,
+              target_item_image: this.picked.image_url,
+              //自分の
+              user_id: this.user.uid,
+              item_id : this.targetItem.item_id,
+              item_name: this.targetItem.item_name,
+              item_image:this.targetItem.image_url,
+              //チャットのキー
+              chatroom_id : chatId,
+              created_at:new Date(),
           };
+
+            const data2 = {
+              //相手の
+              target_user_id: this.user.uid,
+              target_user_name: this.user.displayName,
+              target_user_photo: this.user.photoURL,
+              target_item_id: this.targetItem.item_id,
+              target_item_name: this.targetItem.item_name,
+              target_item_image: this.targetItem.image_url,
+              //相手から見た自分の
+              user_id: this.requestData.user_id,
+              item_id : this.picked.item_id,
+              item_name: this.picked.item_name,
+              item_image: this.picked.item_name,
+              //チャットのキー
+              chatroom_id : chatId,
+              created_at:new Date(),
+          };
+          
+          db.collection('users').doc(this.requestData.user_id).collection('dealings').doc().set(data2)
+
+          db.collection('users').doc(this.user.uid).collection('dealings').doc().set(data)
+          .then(_ => {
           this.user = '';
           this.picked = '';
           this.requestData = '';
-          var setDoc = db.collection('users').doc(this.user.uid).collection('dealings').doc().set(data)
-          .then(_ => {
             this.$router.push("/")
           });
         })

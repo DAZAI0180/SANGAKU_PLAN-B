@@ -57,21 +57,19 @@ import sanitizeHTML from 'sanitize-html'
 import Vue from 'vue'
 Vue.prototype.$sanitize = sanitizeHTML
 
-  export default {
+export default {
   
-      fetch ({ store, route,redirect }) {
-      console.log("今からリダイレクト分岐");
+  fetch ({ store, route,redirect }) {
     if (!store.state.user.user) {
-      //console.log("リダイレクトなんだよなぁ")
       if(route.name != "/login"){
-      return redirect('/login')
+        return redirect('/login')
       }else{
-       return redirect('/mypage')
+        return redirect('/mypage')
       }
     }
     
   },
-    data() {
+  data() {
     return {
       user: {},  // ユーザー情報
       text: [],  // 取得したメッセージを入れる配列
@@ -86,8 +84,13 @@ Vue.prototype.$sanitize = sanitizeHTML
     }
     //console.log(user);
   },
+  asyncData(context) {
+    return {
+      dealingsId: context.query['dealingsId']
+    }
+  },
   
-    created() {
+  created() {
     firebase.auth().onAuthStateChanged(user => {
         // User is signed in.
         //userにログインしているユーザーのデータを入れる
@@ -95,59 +98,49 @@ Vue.prototype.$sanitize = sanitizeHTML
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("chat").doc("6pDrTBLBySzoD1qULm4R").collection("messages");
+        var docRef = db.collection("chat").doc(this.dealingsId).collection("messages");
         //データ取得の条件を指定して取得
         //var query = docRef.where('id','==',user.uid);
         //取ってきたデータを全てtext配列に入れる
 
-    //変更や追加された分だけ持ってくる
-    docRef.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(item => {
-          // console.log(item.doc.data());
-           this.text.push(item.doc.data());
+        //変更や追加された分だけ持ってくる
+        docRef.onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(item => {
+              // console.log(item.doc.data());
+              this.text.push(item.doc.data());
+            })
         })
-    })
 
     })
   },
-    methods : {
-      ...mapActions(['setUser']), 
-      sendMessage(){
-        firebase.auth().onAuthStateChanged(user => {
-            this.user = user ? user : {}
-            //console.log(this.user.uid)
-            const db = firebase.firestore()
-                //db.collection("images").add({ downloadURL });
-                    var time = this.timeCreate();
-                    var data = {
-                    id: user.uid,
-                    name: user.displayName,
-                    message: this.message,
-                    created_at:time,
-                  };
-                  // console.log(this.imageUrl);
-                  var setDoc = db.collection("chat").doc("6pDrTBLBySzoD1qULm4R").collection("messages").doc().set(data);;
-                  // var setDoc = db.collection('item').doc().set(data);
+  methods : {
+    ...mapActions(['setUser']), 
+    sendMessage(){
+      firebase.auth().onAuthStateChanged(user => {
+          this.user = user ? user : {}
+          //console.log(this.user.uid)
+          const db = firebase.firestore()
+              //db.collection("images").add({ downloadURL });
+                  var time = this.timeCreate();
+                  var data = {
+                  id: user.uid,
+                  name: user.displayName,
+                  message: this.message,
+                  created_at:new Date(),
+                };
+                // console.log(this.imageUrl);
+                var setDoc = db.collection("chat").doc(this.dealingsId).collection("messages").doc().set(data);;
+                // var setDoc = db.collection('item').doc().set(data);
 
-                  this.message = "";
+                this.message = "";
 
 
-        })
-      },timeCreate() {
-        var d = new Date();
-        var year  = d.getFullYear();
-        var month = d.getMonth() + 1;
-        var day   = d.getDate();
-        var hour  = ( d.getHours()   < 10 ) ? '0' + d.getHours()   : d.getHours();
-        var min   = ( d.getMinutes() < 10 ) ? '0' + d.getMinutes() : d.getMinutes();
-        var sec   = ( d.getSeconds() < 10 ) ? '0' + d.getSeconds() : d.getSeconds();
-        var time = ( year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec );
-        return time;
-      },
+      })
     },
-    br2nl(){
-        return str.replace(/\n/g, '<br>');
-    }
+  },
+  br2nl(){
+      return str.replace(/\n/g, '<br>');
+  }
   
 };
 

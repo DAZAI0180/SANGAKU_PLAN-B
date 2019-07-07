@@ -22,7 +22,7 @@
           <label :for="value.item_id">
             <v-card flat tile style="width:100%">
               <img
-                :src= "value.url"
+                :src= "value.image_url"
                 width="100%"
                 height="100px"
                 style = "object-fit: cover"
