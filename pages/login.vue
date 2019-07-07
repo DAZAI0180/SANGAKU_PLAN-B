@@ -1,12 +1,10 @@
 <template>
-<v-layout justify-center>
-<div style="margin-left:30px">
+  <v-layout justify-center>
+    <div style="margin-left:30px">
       <v-btn color="info" @click="twitterLogin">Twitterでログイン</v-btn>
-     <v-spacer />
+      <v-spacer />
       <v-btn color="error" @click="googleLogin">Googleでログイン</v-btn>
-
-  
-</div>
+    </div>
   </v-layout>
 </template>
 
@@ -14,16 +12,15 @@
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
-
 export default {
   //ログインしていたらマイページにリダイレクト
-    fetch ({ store, route,redirect }) {
-      if (store.state.user.user) {
-        return redirect('/mypage')
-      }
+  fetch ({ store, route,redirect }) {
+    if (store.state.user.user) {
+      return redirect('/mypage')
+    }
   },
-    mounted() {
-            firebase.auth().onAuthStateChanged(user => {
+  mounted() {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log(user.uid);
         // User is signed in.
@@ -34,10 +31,10 @@ export default {
         }
         //firestore設定
     });
-      
-    },
-    methods : {
-      ...mapActions(['setUser']),
+    
+  },
+  methods : {
+    ...mapActions(['setUser']),
 
     twitterLogin () {
       var provider = new firebase.auth.TwitterAuthProvider()
@@ -72,10 +69,8 @@ export default {
           this.$router.push("/login")
         }
       })
-      
     }
-    },
-  
+  },
 }
 
 </script>

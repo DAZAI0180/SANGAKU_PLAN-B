@@ -1,5 +1,5 @@
 <template>
-<v-container grid-list-md text-xs-center>
+  <v-container grid-list-md text-xs-center>
   <form action @submit.prevent="sendRequestApproval" class="form">
     <maincard />
     <div class="item">
@@ -81,28 +81,26 @@
    <p>{{requestData.text}}</p>
     <!-- <span>Picked: {{ picked }}</span> -->
     <v-btn class="align-center" type="submit" :disabled="!checked" large round color="yellow" >申請を許可</v-btn>
-    </form>
-    </v-container>
-    
+  </form>
+  </v-container>
 </template>
 <script>
 import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import uuid from 'uuid'
-  export default {
-
-      fetch ({ store, route,redirect }) {
+export default {
+  fetch ({ store, route,redirect }) {
     if (!store.state.user.user) {
       if(route.name != "/login"){
       return redirect('/login')
       }else{
-       return redirect('/mypage/')
+        return redirect('/mypage/')
       }
     }
     
   },
-    data() {
+  data() {
     return {
       user: {},  // ユーザー情報
       requestData: {},  // 商品一覧
@@ -118,79 +116,70 @@ import uuid from 'uuid'
       btnColor1:"",
       btnColor2:"",
       btnColor3:""
-      
     }
-    //console.log(user);
   },
-    asyncData(context) {
+  asyncData(context) {
     return {
       requestId: context.query['requestId']
     }
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {
-        // User is signed in.
-        //userにログインしているユーザーのデータを入れる
-        this.user = user ? user : {}
-        //firestore設定
-        const db = firebase.firestore()
-        //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("users").doc(this.user.uid).collection("request").doc(this.requestId);
-        docRef.get().then(doc => {
-            if (doc.exists) {
-                 this.requestData = doc.data()
-                // console.log(this.test);
-            } else {
-                // doc.data() will be undefined in this case
-                console.log("No such document!");
-            }
-        }).then(_=>{
-          const item1_id = this.requestData.item1_id;
-          const item2_id = this.requestData.item2_id;
-          const item3_id = this.requestData.item3_id;
-          const itemDocRef = db.collection("item");
+      // User is signed in.
+      //userにログインしているユーザーのデータを入れる
+      this.user = user ? user : {}
+      //firestore設定
+      const db = firebase.firestore()
+      //itemコレクションを選択（コレクションについては各自調べてください）
+      var docRef = db.collection("users").doc(this.user.uid).collection("request").doc(this.requestId);
+      docRef.get().then(doc => {
+          if (doc.exists) {
+            this.requestData = doc.data()
+          } else {
+            console.log("No such document!");
+          }
+      }).then(_=>{
+        const item1_id = this.requestData.item1_id;
+        const item2_id = this.requestData.item2_id;
+        const item3_id = this.requestData.item3_id;
+        const itemDocRef = db.collection("item");
 
-          itemDocRef.doc(this.requestData.target_item_id).get().then(doc => {
-            let data = {
-              'itemId': doc.id ? doc.id: false,
-              'title': doc.data().title ? doc.data().title : '',
-              'url': doc.data().url ? doc.data().url : '',
-            }
-                this.targetItem = data;
+        itemDocRef.doc(this.requestData.target_item_id).get().then(doc => {
+          let data = {
+            'itemId': doc.id ? doc.id: false,
+            'title': doc.data().title ? doc.data().title : '',
+            'url': doc.data().url ? doc.data().url : '',
+          }
+          this.targetItem = data;
         })
 
-          itemDocRef.doc(item1_id).get().then(doc => {
-            let data = {
-              'itemId': doc.id ? doc.id: false,
-              'title': doc.data().title ? doc.data().title : '',
-              'url': doc.data().url ? doc.data().url : '',
-            }
-                this.item1 = data;
+        itemDocRef.doc(item1_id).get().then(doc => {
+          let data = {
+            'itemId': doc.id ? doc.id: false,
+            'title': doc.data().title ? doc.data().title : '',
+            'url': doc.data().url ? doc.data().url : '',
+          }
+          this.item1 = data;
         })
 
-          itemDocRef.doc(item2_id).get().then(doc => {
-            let data = {
-              'itemId': doc.id ? doc.id: false,
-              'title': doc.data().title ? doc.data().title : '',
-              'url': doc.data().url ? doc.data().url : '',
-            }
-            console.log(this.requestData.target_user_id);
-                this.item2= data;
+        itemDocRef.doc(item2_id).get().then(doc => {
+          let data = {
+            'itemId': doc.id ? doc.id: false,
+            'title': doc.data().title ? doc.data().title : '',
+            'url': doc.data().url ? doc.data().url : '',
+          }
+          this.item2= data;
         })
 
-          itemDocRef.doc(item3_id).get().then(doc => {
-            let data = {
-              'itemId': doc.id ? doc.id: false,
-              'title': doc.data().title ? doc.data().title : '',
-              'url': doc.data().url ? doc.data().url : '',
-            }
-            
-                this.item3 = data;
+        itemDocRef.doc(item3_id).get().then(doc => {
+          let data = {
+            'itemId': doc.id ? doc.id: false,
+            'title': doc.data().title ? doc.data().title : '',
+            'url': doc.data().url ? doc.data().url : '',
+          }
+          this.item3 = data;
         })
-
-
-        });
-         
+      });     
     });
     
   },
@@ -219,11 +208,13 @@ import uuid from 'uuid'
             item_image:this.targetItem.url,
             created_at:new Date(),
           };
+          this.user = '';
+          this.picked = '';
+          this.requestData = '';
           var setDoc = db.collection('users').doc(this.user.uid).collection('dealings').doc().set(data)
           .then(_ => {
             this.$router.push("/")
           });
-
         })
       },
     },

@@ -115,37 +115,38 @@ import uuid from 'uuid'
             const db = firebase.firestore()
             // ストレージオブジェクト作成
             var storageRef = firebase.storage().ref();
-            // ファイルのパスを設定
-
+            //ファイルの名前を一意にする
             this.imageName = uuid();
+            // ファイルのパスを設定
             var mountainsRef = storageRef.child(`images/${this.imageName}`);
             // ファイルを適用してファイルアップロード開始
             mountainsRef.put(this.imageFile).then(snapshot => {
               snapshot.ref.getDownloadURL().then(downloadURL => {
                 this.imageUrl = downloadURL;
-                    var data = {
-                    id: user.uid,
-                    name: user.displayName,
-                    title:this.title,
-                    text: this.input,
+                    const itemInputData = {
+                    user_id: user.uid,
+                    user_photo:user.photoURL,
+                    user_name: user.displayName,
+                    item_name:this.title,
+                    item_text: this.input,
                     category: "食べ物",
-                    url: this.imageUrl,
+                    image_url: this.imageUrl,
                     created_at:new Date(),
                   };
-                  db.collection('item').add(data)
+
+                  db.collection('item').add(itemInputData)
                   .then(docRef => {
-                    console.log(docRef.id);
-                    var data2 = {
+                    const usersInputData = {
                     item_id: docRef.id,
-                    name: user.displayName,
-                    title:this.title,
+                    user_photo:user.photoURL,
+                    user_name: user.displayName,
+                    item_name:this.title,
                     text: this.input,
                     category: "食べ物",
-                    url: this.imageUrl,
+                    image_url: this.imageUrl,
                     created_at:new Date(),
                   };
-                  console.log(data2);
-                    db.collection("users/"+this.user.uid+"/item").doc().set(data2);
+                    db.collection("users/"+this.user.uid+"/item").doc().set(usersInputData);
                     this.input = "";
                     this.imageName= "",
                     this.imageUrl = "",
@@ -154,10 +155,6 @@ import uuid from 'uuid'
                   }).then(_ => {
             this.$router.push("/")
           });
-                  // console.log(setDoc.id);
-                  // var setDoc2 = db.collection("users/"+this.user.uid+"/item").doc().set(data);
-                  //フォームを空にする
-                  //console.log(setDoc);
               });
             });
             
@@ -198,7 +195,7 @@ import uuid from 'uuid'
           alert(error)
         })
       },
-onFileChange(e) {
+    onFileChange(e) {
       const files = e.target.files || e.dataTransfer.files;
       this.createImage(files[0]);
       this.img_name = files[0].name;

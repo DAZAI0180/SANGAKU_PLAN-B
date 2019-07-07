@@ -28,9 +28,8 @@ import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 
-  export default {
-  
-      fetch ({ store, route,redirect }) {
+export default {
+  fetch ({ store, route,redirect }) {
       console.log("今からリダイレクト分岐");
     if (!store.state.user.user) {
       //console.log("リダイレクトなんだよなぁ")
@@ -40,37 +39,31 @@ import { mapActions, mapState, mapGetters } from 'vuex'
        return redirect('/mypage/')
       }
     }
-    
   },
-    data() {
+  data() {
     return {
       user: {},  // ユーザー情報
     }
-    //console.log(user);
   },
   created() {
     firebase.auth().onAuthStateChanged(user => {
-        // User is signed in.
-        //userにログインしているユーザーのデータを入れる
         this.user = user ? user : {}
-
     })
   },
-    methods : {
-      ...mapActions(['setUser']), 
-
-      logout() {
-        const self = this
-        firebase.auth().signOut()
-        .then(_ => {
-          console.log("ログアウト成功")
-          this.$store.dispatch('user/fecthUser',)
-          //self.$router.push("/login")
-        }).catch((error) => {
-          alert(error)
-        })
-      }
-    },
+  methods : {
+    ...mapActions(['setUser']), 
+    logout() {
+      const self = this
+      firebase.auth().signOut()
+      .then(_ => {
+        console.log("ログアウト成功")
+        this.$store.dispatch('user/fecthUser',)
+        //self.$router.push("/login")
+      }).catch((error) => {
+        alert(error)
+      })
+    }
+  },
   
 };
 

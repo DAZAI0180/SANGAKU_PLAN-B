@@ -17,7 +17,8 @@
         <nuxt />
     </v-content>
 
- <v-card height="60px" flat>
+ <!-- <v-card height="60px" flat> -->
+   <v-footer>
  <v-bottom-nav :value="true" :active.sync="bottomNav"
  :fixed=true >
   <v-btn color="teal" flat value="recent" to = "/" >
@@ -45,7 +46,8 @@
         <v-icon>accessibility</v-icon>
       </v-btn>
     </v-bottom-nav>
-    </v-card>
+    </v-footer>
+    <!-- </v-card> -->
 
   </v-app>
   
@@ -64,28 +66,6 @@ export default {
       fixed: false,
       absolute:false,
       value:true,
-      items: [
-        {
-          icon: 'apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'bubble_chart',
-          title: 'ホーム',
-          to: '/home'
-        },
-        {
-          icon: 'bubble_chart',
-          title: '出品した商品',
-          to: '/'
-        },
-        {
-          icon: 'bubble_chart',
-          title: 'せがんご3',
-          to: '/inspire'
-        },
-      ],
       miniVariant: false,
       right: true,
       rightDrawer: false,

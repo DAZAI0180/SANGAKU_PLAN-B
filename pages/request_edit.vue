@@ -1,36 +1,38 @@
 <template>
-      <v-card light>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-        </v-card-actions>
-         <v-container grid-list-md text-xs-center>
-           <form action @submit.prevent="sendRequest" class="form">
-          <v-layout row wrap class="scroll">
-            
-            <v-flex
-              xs4
-              md3
-              v-for="(value,index) in item" :key="index"
-              style="margin-left:0px"
-            >
-              <v-card flat tile style="width:100%">
-                <input type="checkbox" :id="value.item_id" :value="value.item_id" v-model="checkedItems"
-                style="position:relative;top:25px;right:50px" v-on:change="selectCount">
-                <label :for="value.item_id">
-                <img
-                  :src= "value.url"
-                  width="100%"
-                  height="100px"
-                  style = "object-fit: cover"
-                >
-                </label>
-                <p style="text-align:center">{{value.title}}</p>
-              </v-card>
-              
-            </v-flex>
-            
-          </v-layout>
-                <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
+  <v-card light>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+    </v-card-actions>
+    <v-container grid-list-md text-xs-center>
+    <form action @submit.prevent="sendRequest" class="form">
+      <v-layout row wrap class="scroll">
+        <v-flex
+          xs4
+          md3
+          v-for="(value,index) in item" :key="index"
+          style="margin-left:0px"
+        > 
+          <input type="checkbox" 
+          :id="value.item_id" 
+          :value="value.item_id" 
+          v-model="checkedItems"
+          style="" 
+          v-on:change="selectCount"
+          >
+          <label :for="value.item_id">
+            <v-card flat tile style="width:100%">
+              <img
+                :src= "value.url"
+                width="100%"
+                height="100px"
+                style = "object-fit: cover"
+              >
+              <p style="text-align:center">{{value.title}}</p>
+            </v-card>
+          </label>
+        </v-flex>
+      </v-layout>
+      <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;メッセージを添えてみましょう
       </p>
       <v-flex xs12>
@@ -43,12 +45,10 @@
           height=150
         ></v-textarea>
       </v-flex>
-            <v-btn type="submit" :disabled="!checked" large round color="yellow" dark>申請を送信</v-btn>
-            </form>
-        </v-container>
-        
-      </v-card>
-      
+    <v-btn type="submit" :disabled="!checked" large round color="yellow" dark>申請を送信</v-btn>
+    </form>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
