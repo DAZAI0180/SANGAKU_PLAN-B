@@ -50,12 +50,39 @@
                 >
                   <v-list-tile>
                     <img :src="item.item_image"
-                    width="100px">
+                    width="100px"
+              height="70px"
+              style = "object-fit: cover">
                   </v-list-tile>
 
                   <v-list-tile-content>
                     <v-list-tile-title v-html="item.target_user_name"></v-list-tile-title>
                     <v-list-tile-sub-title v-html="item.item_name"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+              </nuxt-link>
+            </div>
+          </v-list>
+      </v-tab-item>
+        <v-tab-item value="tab-3">
+          <v-list three-line>
+            <div v-for="(item, index) in myRequest" :key="index" >
+              <nuxt-link :to="{path: '/mypage/dealings', query: {dealingsId: item.chatroom_id }}">
+                <v-list-tile
+                  :key="item.item_id"
+                  target_user_photo
+                >
+                  <v-list-tile>
+                    <img :src="item.target_item_image"
+                    width="100px"
+                    height="70px"
+                    style = "object-fit: cover"
+                    >
+                  </v-list-tile>
+
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="item.target_user_name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="item.text"></v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </nuxt-link>
@@ -72,6 +99,7 @@ import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import uuid from 'uuid'
+
 export default {
   fetch ({ store, route,redirect }) {
     if (!store.state.user.user) {
@@ -87,6 +115,7 @@ export default {
       user: {},  // ユーザー情報
       item: [],  // 商品一覧
       dealings:[],
+      myRequest:[],
       tab: null,
     }
   },
@@ -99,17 +128,21 @@ export default {
       const db = firebase.firestore()
       //itemコレクションを選択（コレクションについては各自調べてください）
       var docItemRef = db.collection('users').doc(this.user.uid).collection('request');
+      //取引リスト
       var docDealingsRef = db.collection('users').doc(this.user.uid).collection('dealings');
+      //送ったリクエスト一覧
+      var docMyRequestRef = db.collection('users').doc(this.user.uid).collection('sendRequest');
 
       // 来た申請一覧
       docItemRef.onSnapshot(snapshot => {
           snapshot.docChanges().forEach(item => {
-              let data = {
-              'request_id': item.doc.id,
-              'user_name': item.doc.data().user_name,
-              'user_photo': item.doc.data().user_photo,
-              'text': item.doc.data().text
-            }
+            let data = {
+            'request_id': item.doc.id,
+            'user_name': item.doc.data().user_name,
+            'user_photo': item.doc.data().user_photo,
+            'text': item.doc.data().text
+          }
+          console.log(data);
             this.item.push(data);
           })
       })
@@ -119,6 +152,14 @@ export default {
           snapshot.docChanges().forEach(item => {
             //console.log(item.doc.data());
             this.dealings.push(item.doc.data());
+          })
+      })
+
+      //自分が送った申請一覧
+      docMyRequestRef.onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(item => {
+            console.log(item.doc.data());
+            this.myRequest.push(item.doc.data());
           })
       })
     })

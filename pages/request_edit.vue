@@ -74,8 +74,8 @@ import uuid from 'uuid'
     return {
       user: {},  // ユーザー情報
       item: [],  // 商品一覧
+      itemDetail :[],
       message: '',  // 入力したメッセージ
-
       dialog: false,
       checkedItems: [],
       itemId : 'default ID',
@@ -92,23 +92,37 @@ import uuid from 'uuid'
 
   created() {
     firebase.auth().onAuthStateChanged(user => {
-        // User is signed in.
-        //userにログインしているユーザーのデータを入れる
-        this.user = user ? user : {}
-        //firestore設定
-        const db = firebase.firestore()
-        //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("users/"+this.user.uid+"/item");
-        // var query = docRef.orderBy("created_at", "asc");
+      //userにログインしているユーザーのデータを入れる
+      this.user = user ? user : {}
+      //firestore設定
+      const db = firebase.firestore()
+      //itemコレクションを選択（コレクションについては各自調べてください）
+      var docRef = db.collection("users/"+this.user.uid+"/item");
+      // var query = docRef.orderBy("created_at", "asc");
 
       //変更や追加された分だけ持ってくる
       docRef.onSnapshot(snapshot => {
-          snapshot.docChanges().forEach(item => {
-            this.item.push(item.doc.data());
-            
-          })
+        snapshot.docChanges().forEach(item => {
+          this.item.push(item.doc.data());
+          
+        })
       })
+
+            var docRef2 = db.collection("item").doc(this.itemId);
+      
+      docRef2.get().then(doc => {
+          if (doc.exists) {
+              this.itemDetail = doc.data();
+          } else {
+              console.log("No such document!");
+          }
+      }).catch(function(error) {
+          console.log("Error getting document:", error);
+      });
      })
+
+
+
   },
     methods : {
       ...mapActions(['setUser']), 
@@ -124,6 +138,8 @@ import uuid from 'uuid'
     },
       sendRequest(){
             const db = firebase.firestore()
+
+            //送られた側に入れるデータ
             const data = {
             user_id: this.user.uid,
             user_name: this.user.displayName,
@@ -135,13 +151,33 @@ import uuid from 'uuid'
             text: this.message,
             created_at:new Date(),
           };
+
+          //送る側の申請データ
+            const data2 = {
+            user_id: this.user.uid,
+            user_name: this.user.displayName,
+            user_photo: this.user.photoURL,
+            target_item_id: this.itemId,
+            target_item_image :this.itemDetail.image_url,
+            item1_id: this.checkedItems[0] ? this.checkedItems[0] : '',
+            item2_id: this.checkedItems[1] ? this.checkedItems[1] : '',
+            item3_id: this.checkedItems[2] ? this.checkedItems[2] : '',
+            text: this.message,
+            created_at:new Date(),
+          };
+          //自分が送った申請
+          db.collection('users').doc(this.user.uid).collection('sendRequest').doc().set(data2).then(_=> {
+          db.collection('users').doc(this.userId).collection('request').doc().set(data).then(_ => {
+            this.$router.push("/")
+          });
+          })
+
           //どれか１つでも初期化しないとアカウント切り替え時にバグる
           this.user = '';
           this.itemId = '';
           this.message = '';
-          db.collection('users').doc(this.userId).collection('request').doc().set(data).then(_ => {
-            this.$router.push("/")
-          });
+
+
 
       },
     },

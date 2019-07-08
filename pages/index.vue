@@ -14,7 +14,7 @@
           <v-card flat tile style="width:100%">
             <nuxt-link :to="{path: '/item_detail', query: {itemId: value.itemId }}">
             <img
-              :src= "value.image_url"
+              :src= "value.image_url[0]"
               width="100%"
               height="100px"
               style = "object-fit: cover"

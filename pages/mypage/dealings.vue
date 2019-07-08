@@ -38,8 +38,7 @@
             ></v-textarea>
           </v-flex>
           <v-layout justify-center>
-          <v-btn type="submit" large color="error">メッセージを送る</v-btn>
-          
+            <v-btn type="submit" large color="error">メッセージを送る</v-btn>
           </v-layout>
       </form>
         
@@ -98,7 +97,7 @@ export default {
         //firestore設定
         const db = firebase.firestore()
         //itemコレクションを選択（コレクションについては各自調べてください）
-        var docRef = db.collection("chat").doc(this.dealingsId).collection("messages");
+        var docRef = db.collection("chat").doc(this.dealingsId).collection("messages").orderBy("created_at", "desc");
         //データ取得の条件を指定して取得
 
         //変更や追加された分だけ持ってくる

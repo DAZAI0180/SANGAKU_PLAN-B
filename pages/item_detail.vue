@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex v-if="loading" xs12 sm6 offset-sm3>
     <v-card>
       <!-- <v-btn fab dark small color="black">
         <v-icon dark>person</v-icon>
@@ -65,6 +65,12 @@
         </v-container>
     </v-card> 
     </v-flex>
+
+    <v-progress-circular
+    v-else
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
   </v-layout>
 </template>
 
@@ -92,6 +98,7 @@ export default {
       item: '',  // 商品一覧
       itemId : 'default ID',
       dialog: false,
+      loading: false
     }
   },
   asyncData(context) {
@@ -114,6 +121,7 @@ export default {
             } else {
                 console.log("No such document!");
             }
+            this.loading = true
         }).catch(function(error) {
             console.log("Error getting document:", error);
         });
