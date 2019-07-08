@@ -25,7 +25,7 @@
               <v-card flat tile class="d-flex">
 
                 <v-img
-                  :src="item.image_url"
+                  :src="item.image_url[0]"
                   height="200"
                   :lazy-src="item.user_photo"
                   aspect-ratio="1"

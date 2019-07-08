@@ -158,7 +158,7 @@ export default {
           let data = {
             'item_id': doc.id ? doc.id: false,
             'item_name': doc.data().item_name ? doc.data().item_name : '',
-            'image_url': doc.data().image_url ? doc.data().image_url : '',
+            'image_url': doc.data().image_url ? doc.data().image_url[0] : '',
           }
           this.item1 = data;
         })
@@ -167,7 +167,7 @@ export default {
           let data = {
             'item_id': doc.id ? doc.id: false,
             'item_name': doc.data().item_name ? doc.data().item_name : '',
-            'image_url': doc.data().image_url ? doc.data().image_url : '',
+            'image_url': doc.data().image_url ? doc.data().image_url[0] : '',
           }
           this.item2= data;
         })
@@ -176,7 +176,7 @@ export default {
           let data = {
             'item_id': doc.id ? doc.id: false,
             'item_name': doc.data().item_name ? doc.data().item_name : '',
-            'image_url': doc.data().image_url ? doc.data().image_url : '',
+            'image_url': doc.data().image_url ? doc.data().image_url[0] : '',
           }
           this.item3 = data;
         })

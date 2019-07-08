@@ -22,7 +22,7 @@
           <label :for="value.item_id">
             <v-card flat tile style="width:100%">
               <img
-                :src= "value.image_url"
+                :src= "value.image_url[0]"
                 width="100%"
                 height="100px"
                 style = "object-fit: cover"
@@ -108,7 +108,7 @@ import uuid from 'uuid'
         })
       })
 
-            var docRef2 = db.collection("item").doc(this.itemId);
+      var docRef2 = db.collection("item").doc(this.itemId);
       
       docRef2.get().then(doc => {
           if (doc.exists) {
