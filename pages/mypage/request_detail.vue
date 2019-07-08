@@ -231,7 +231,7 @@ export default {
               user_id: this.requestData.user_id,
               item_id : this.picked.item_id,
               item_name: this.picked.item_name,
-              item_image: this.picked.item_name,
+              item_image: this.picked.image_url,
               //チャットのキー
               chatroom_id : chatId,
               created_at:new Date(),
