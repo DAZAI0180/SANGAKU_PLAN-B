@@ -114,20 +114,25 @@ export default {
   methods : {
     ...mapActions(['setUser']), 
     sendMessage(){
-      firebase.auth().onAuthStateChanged(user => {
-        this.user = user ? user : {}
+      // firebase.auth().onAuthStateChanged(user => {
+        
+        // this.user = user ? user : {}
         const db = firebase.firestore()
             var data = {
-            id: user.uid,
-            name: user.displayName,
+            id: this.user.uid,
+            name: this.user.displayName,
             message: this.message,
             created_at:new Date(),
           };
+          
+          if(this.message != ""){
           var setDoc = db.collection("chat").doc(this.dealingsId).collection("messages").doc().set(data);
-          this.user = "";
+          }
           this.message = "";
-
-      })
+          
+        
+      // })
+      
     },
   },
   br2nl(){
