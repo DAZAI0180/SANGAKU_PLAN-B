@@ -1,17 +1,5 @@
 <template>
   <v-app>
-
-    <v-toolbar :fixed="fixed" app >
-      <v-spacer />
-        <v-text-field
-        hide-details
-        prepend-icon="search"
-        single-line
-        placeholder="何をお探しですか？"
-         />
-        <!--<v-toolbar-title v-text="title" />-->
-        <v-spacer />
-    </v-toolbar>
     
     <v-content>
         <nuxt />
