@@ -27,7 +27,8 @@
               :src="uploadedImage[0]"
             >
               <v-btn
-               fab dark small color="primary"
+                fab dark small color="primary"
+                @click="remove(0)"
               >
                 <v-icon>clear</v-icon>
               </v-btn>
@@ -40,7 +41,8 @@
               :src="uploadedImage[1]"
             >
               <v-btn
-               fab dark small color="primary"
+                fab dark small color="primary"
+                @click="remove(1)"
               >
                 <v-icon>clear</v-icon>
               </v-btn>
@@ -53,7 +55,8 @@
               :src="uploadedImage[2]"
             >
               <v-btn
-               fab dark small color="primary"
+                fab dark small color="primary"
+                @click="remove(2)"
               >
                 <v-icon>clear</v-icon>
               </v-btn>
@@ -63,7 +66,7 @@
         </v-layout>
       </v-container>
 
-        <v-layout justify-center>
+      <v-layout justify-center>
           <v-btn
             @click="pickFile"
             v-model="imageName"
@@ -71,7 +74,7 @@
           >
             <v-icon>photo_camera</v-icon>
           </v-btn>
-        </v-layout>
+      </v-layout>
       <input
         type="file"
         style="display: none"
@@ -79,6 +82,13 @@
         accept="image/*"
         @change="onFilePicked"
       />
+
+      <v-dialog v-model="dialog" scrollable max-width="300px">
+        <v-card>
+          <v-card-title>画像は最大三つまでしか選択できません。</v-card-title>
+          <v-divider></v-divider>
+        </v-card>
+      </v-dialog>
 
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品の説明を入力してください
@@ -149,7 +159,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       imageName: [],
       imageFile: [],
       uploadedImage: [],
-      flag: "",
       imageUrl: [],
     }
     //console.log(user);
@@ -220,25 +229,36 @@ import { mapActions, mapState, mapGetters } from 'vuex'
         })
       },
       pickFile() {
-      this.$refs.image.click();
-    },
+        if(this.imageName[2] !== undefined){
+          //画像が三つ以上アップロードされている場合警告
+          this.dialog = true;
+        }else{
+          this.$refs.image.click();
+        }
+      },
     //ファイルの選択変えた時に動きそう
-     onFilePicked(e) {
-      const files = e.target.files;
-      if (files[0] !== undefined) {
-        this.imageName.push(files[0].name);
-        const fr = new FileReader();
-        fr.onload = e => {
-          this.flag = "tinpo";
-          this.uploadedImage.push(e.target.result);
-        };
-        fr.readAsDataURL(files[0]);
-        fr.addEventListener("load", () => {
-          this.imageFile.push(files[0]); // this is an image file that can be sent to server...
-          console.log("pushed:"+this.imageName);
-        });
-      } 
-    },
+      onFilePicked(e) {
+        const files = e.target.files;
+        if (files[0] !== undefined) {
+          this.imageName.push(files[0].name);
+          const fr = new FileReader();
+          fr.onload = e => {
+            this.uploadedImage.push(e.target.result);
+          };
+          fr.readAsDataURL(files[0]);
+          fr.addEventListener("load", () => {
+            this.imageFile.push(files[0]); // this is an image file that can be sent to server...
+            console.log("pushed:"+this.imageName);
+          });
+        } 
+      },
+
+      remove(number) {
+        this.imageName.splice(number,1);
+        this.uploadedImage.splice(number,1);
+        this.imageUrl.splice(number,1);
+        console.log("delete:"+this.imageName);
+      },
 
       logout() {
         const self = this
@@ -291,7 +311,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 
 
       },
-
 
   },
   
