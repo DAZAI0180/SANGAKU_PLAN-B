@@ -17,22 +17,52 @@
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;画像を追加してください
       </p>
-      <img
-        width=33%
-        v-show="flag"
-        class="preview-item-file1"
-        :src="uploadedImage[0]"
-      /><img
-        width=33%
-        v-show="flag"
-        class="preview-item-file2"
-        :src="uploadedImage[1]"
-      /><img
-        width=33%
-        v-show="flag"
-        class="preview-item-file3"
-        :src="uploadedImage[2]"
-      />
+
+      <v-container grid-list-md text-xs-center>
+        <v-layout row wrap>
+
+          <!-- 画像一つ目 -->
+          <v-flex xs4 v-show="uploadedImage[0]">
+            <v-img
+              :src="uploadedImage[0]"
+            >
+              <v-btn
+               fab dark small color="primary"
+              >
+                <v-icon>clear</v-icon>
+              </v-btn>
+            </v-img>
+          </v-flex>
+
+          <!-- 画像二つ目 -->
+          <v-flex xs4 v-show="uploadedImage[1]">
+            <v-img
+              :src="uploadedImage[1]"
+            >
+              <v-btn
+               fab dark small color="primary"
+              >
+                <v-icon>clear</v-icon>
+              </v-btn>
+            </v-img>
+          </v-flex>
+
+          <!-- 画像三つ目 -->
+          <v-flex xs4 v-show="uploadedImage[2]">
+            <v-img
+              :src="uploadedImage[2]"
+            >
+              <v-btn
+               fab dark small color="primary"
+              >
+                <v-icon>clear</v-icon>
+              </v-btn>
+            </v-img>
+          </v-flex>
+
+        </v-layout>
+      </v-container>
+
         <v-layout justify-center>
           <v-btn
             @click="pickFile"
@@ -63,6 +93,7 @@
           height=150
         ></v-textarea>
       </v-flex>
+      
       <p style="width:100%; margin:10px 0 13px 0; background-color:gray; color:white;line-height:200%">
         &emsp;商品のカテゴリを追加してください
       </p>
@@ -223,43 +254,43 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       //書き込み処理
       DBwriting(db,user) {
         const itemInputData = {
-        user_id: user.uid,
-        user_photo:user.photoURL,
-        user_name: user.displayName,
-        item_name:this.title,
-        item_text: this.input,
-        category: this.category,
-        image_url: this.imageUrl,
-        created_at:new Date(),
-      };
-      //itemコレクションに対して
-      db.collection('item').add(itemInputData)
-      .then(docRef => {
-        const usersInputData = {
-        item_id: docRef.id,
-        user_photo:user.photoURL,
-        user_name: user.displayName,
-        item_name:this.title,
-        text: this.input,
-        category: this.category,
-        image_url: this.imageUrl,
-        created_at:new Date(),
-      };
-      // ユーザーの出品一覧に対して
-     db.collection("users/"+this.user.uid+"/item").doc().set(usersInputData)
-      this.input = "";
-      this.imageName= [],
-      this.imageFile = [],
-      this.uploadedImage = [],
-      this.imageUrl = [],
-      this.title = "",
-      this.category = ""
-      }).then(_ => {
+          user_id: user.uid,
+          user_photo:user.photoURL,
+          user_name: user.displayName,
+          item_name:this.title,
+          item_text: this.input,
+          category: this.category,
+          image_url: this.imageUrl,
+          created_at:new Date(),
+        };
+        //itemコレクションに対して
+        db.collection('item').add(itemInputData)
+        .then(docRef => {
+          const usersInputData = {
+            item_id: docRef.id,
+            user_photo:user.photoURL,
+            user_name: user.displayName,
+            item_name:this.title,
+            text: this.input,
+            category: this.category,
+            image_url: this.imageUrl,
+            created_at:new Date(),
+          };
+          // ユーザーの出品一覧に対して
+           db.collection("users/"+this.user.uid+"/item").doc().set(usersInputData)
+          this.input = "";
+          this.imageName= [],
+          this.imageFile = [],
+          this.uploadedImage = [],
+          this.imageUrl = [],
+          this.title = "",
+          this.category = ""
+        }).then(_ => {
         this.$router.push("/")
-      });
+        });
 
 
-    },
+      },
 
 
   },
