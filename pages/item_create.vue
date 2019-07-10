@@ -76,6 +76,7 @@
           </v-btn>
       </v-layout>
       <input
+        multiple="multiple"
         type="file"
         style="display: none"
         ref="image"
@@ -238,8 +239,14 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       },
     //ファイルの選択変えた時に動きそう
       onFilePicked(e) {
-        const files = e.target.files;
-        if (files[0] !== undefined) {
+        var files = event.target.files;
+        for (var i = 0, f; f = files[i]; i++) {
+          this.imageName.push(files[0].name);
+          var fr = new FileReader;
+          fr.readAsDataURL(f);
+
+
+        
           this.imageName.push(files[0].name);
           const fr = new FileReader();
           fr.onload = e => {
@@ -250,7 +257,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             this.imageFile.push(files[0]); // this is an image file that can be sent to server...
             console.log("pushed:"+this.imageName);
           });
-        } 
       },
 
       remove(number) {
