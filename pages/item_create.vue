@@ -86,7 +86,7 @@
 
       <v-dialog v-model="dialog" scrollable max-width="300px">
         <v-card>
-          <v-card-title>画像は最大三つまでしか選択できません。</v-card-title>
+          <v-card-text>{{Message}}</v-card-text>
           <v-divider></v-divider>
         </v-card>
       </v-dialog>
@@ -132,6 +132,8 @@
 import createPersistedState from 'vuex-persistedstate'
 import firebase from '~/plugins/firebase'
 import { mapActions, mapState, mapGetters } from 'vuex'
+import uuid from 'uuid'
+
 
   export default {
   
@@ -154,6 +156,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       input: '',  // 入力したメッセージ
       category: '',
       title: '',
+      Message: '',
       photo: null,
       photo_url: null,
       dialog: false,
@@ -175,8 +178,10 @@ import { mapActions, mapState, mapGetters } from 'vuex'
             var storageRef = firebase.storage().ref();
 
             // ファイルのパスを設定(1)
+            this.imageName[0] = uuid();
             var mountainsRef = storageRef.child(`images/${this.imageName[0]}`);
             // ファイルを適用してファイルアップロード開始
+            console.log(this.imageFile[0]);
             mountainsRef.put(this.imageFile[0]).then(snapshot => {
               //パスを取得
               snapshot.ref.getDownloadURL().then(downloadURL =>{
@@ -186,6 +191,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                 if(this.imageName[1] !== undefined){
 
                   // ファイルのパスを設定(2)
+                  this.imageName[1] = uuid();
                   var mountainsRef = storageRef.child(`images/${this.imageName[1]}`);
                   // ファイルを適用してファイルアップロード開始
                   mountainsRef.put(this.imageFile[1]).then(snapshot => {
@@ -197,6 +203,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
                       if(this.imageName[2] !== undefined){
 
                         // ファイルのパスを設定(3)
+                        this.imageName[2] = uuid();
                         var mountainsRef = storageRef.child(`images/${this.imageName[2]}`);
                         // ファイルを適用してファイルアップロード開始
                         mountainsRef.put(this.imageFile[2]).then(snapshot => {
@@ -231,7 +238,8 @@ import { mapActions, mapState, mapGetters } from 'vuex'
       },
       pickFile() {
         if(this.imageName[2] !== undefined){
-          //画像が三つ以上アップロードされている場合警告
+          //画像が三つアップロードされている場合警告
+          this.Message = "画像は三つ以上選択できません"
           this.dialog = true;
         }else{
           this.$refs.image.click();
@@ -240,30 +248,35 @@ import { mapActions, mapState, mapGetters } from 'vuex'
     //ファイルの選択変えた時に動きそう
       onFilePicked(e) {
         var files = event.target.files;
-        for (var i = 0, f; f = files[i]; i++) {
-          this.imageName.push(files[0].name);
-          var fr = new FileReader;
-          fr.readAsDataURL(f);
-
-
-        
-          this.imageName.push(files[0].name);
-          const fr = new FileReader();
-          fr.onload = e => {
-            this.uploadedImage.push(e.target.result);
-          };
-          fr.readAsDataURL(files[0]);
-          fr.addEventListener("load", () => {
-            this.imageFile.push(files[0]); // this is an image file that can be sent to server...
-            console.log("pushed:"+this.imageName);
-          });
+        //画像アップロード時にファイルが四つ以上選択された場合警告
+        if(files.length > 3){
+          this.Message = "画像は三つ以上選択できません";
+          this.dialog = true;
+        }else{
+          for (var i = 0, f; f = files[i]; i++) {
+            console.log(files[i].name);
+            this.imageName.push(files[i].name);
+            console.log(files[i]);
+            this.imageFile.push(files[i]); // this is an image file that can be sent to server...
+            var fr = new FileReader;
+            fr.readAsDataURL(f);
+            fr.onload = e => {
+              this.uploadedImage.push(e.target.result);
+            };
+            fr.addEventListener("load", () => {
+              this.imageFile.push(files[i]); // this is an image file that can be sent to server...
+              console.log("nakami:"+this.imageName);
+              console.log("nakami:"+this.imageFile);
+            });
+          }
+        }
       },
 
       remove(number) {
         this.imageName.splice(number,1);
         this.uploadedImage.splice(number,1);
         this.imageUrl.splice(number,1);
-        console.log("delete:"+this.imageName);
+        console.log("nakami:"+this.imageName);
       },
 
       logout() {
