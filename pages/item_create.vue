@@ -181,7 +181,6 @@ import uuid from 'uuid'
             this.imageName[0] = uuid();
             var mountainsRef = storageRef.child(`images/${this.imageName[0]}`);
             // ファイルを適用してファイルアップロード開始
-            console.log(this.imageFile[0]);
             mountainsRef.put(this.imageFile[0]).then(snapshot => {
               //パスを取得
               snapshot.ref.getDownloadURL().then(downloadURL =>{
@@ -249,14 +248,12 @@ import uuid from 'uuid'
       onFilePicked(e) {
         var files = event.target.files;
         //画像アップロード時にファイルが四つ以上選択された場合警告
-        if(files.length > 3){
+        if(files.length + this.imageName.length > 3){
           this.Message = "画像は三つ以上選択できません";
           this.dialog = true;
         }else{
           for (var i = 0, f; f = files[i]; i++) {
-            console.log(files[i].name);
             this.imageName.push(files[i].name);
-            console.log(files[i]);
             this.imageFile.push(files[i]); // this is an image file that can be sent to server...
             var fr = new FileReader;
             fr.readAsDataURL(f);
@@ -266,7 +263,6 @@ import uuid from 'uuid'
             fr.addEventListener("load", () => {
               this.imageFile.push(files[i]); // this is an image file that can be sent to server...
               console.log("nakami:"+this.imageName);
-              console.log("nakami:"+this.imageFile);
             });
           }
         }
