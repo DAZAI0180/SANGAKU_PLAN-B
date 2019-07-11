@@ -328,7 +328,6 @@ import uuid from 'uuid'
         this.$router.push("/")
         });
 
-
       },
 
   },
